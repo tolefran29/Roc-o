@@ -17,7 +17,7 @@ if (!siteUrl && repo.includes("/")) {
 }
 const apkUrl = repo ? `https://github.com/${repo}/releases/latest/download/rocio.apk` : "";
 const config = (extra = {}) => "window.ROCIO_CONFIG=" + JSON.stringify(Object.assign({
-  version: VERSION, aiEndpoint: "", aiKey: "", siteUrl, apkUrl, privacyUrl: siteUrl ? siteUrl + "privacy.html" : "", contactEmail: "id00889261@usal.es"
+  version: VERSION, aiEndpoint: "", aiKey: "", siteUrl, apkUrl, privacyUrl: siteUrl ? siteUrl + "privacy.html" : "", contactEmail: ""
 }, (() => { try { return JSON.parse(fs.readFileSync("src/ai.json", "utf8")); } catch { return {}; } })(), extra)) + ";";
 
 // Fuentes locales (sin conexión)

@@ -319,3 +319,30 @@ a.set-row{color:inherit;text-decoration:none}
 a.btn{text-decoration:none}
 .ai-note{display:flex;gap:12px;align-items:flex-start;font-size:15px}
 .ai-note svg{width:24px;height:24px;color:var(--leaf);flex:none;margin-top:2px}
+
+/* Fotos */
+.av.ph{background:var(--surface-2)!important}
+.av img{width:100%;height:100%;object-fit:cover;display:block}
+.ph-pick{position:relative;cursor:pointer;flex:none}
+.ph-cam{position:absolute;right:-4px;bottom:-4px;width:26px;height:26px;border-radius:50%;background:var(--leaf);color:var(--surface);display:grid;place-items:center;border:2px solid var(--paper)}
+.ph-cam svg{width:14px;height:14px}
+.pl-hero{position:relative;margin:-2px 0 14px;border-radius:var(--r-lg);overflow:hidden;aspect-ratio:16/9;background:var(--surface-2)}
+.pl-hero img{width:100%;height:100%;object-fit:cover;display:block}
+.credit{position:absolute;right:8px;bottom:8px;font-size:11px;color:#fff;background:rgba(0,0,0,.45);padding:3px 8px;border-radius:999px;text-decoration:none}
+.pcard .av{width:52px;height:52px}
+/* Modo experto */
+.expert{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:12px 14px;display:grid;gap:12px}
+.expert>summary{cursor:pointer;font-weight:700;font-size:14.5px;color:var(--leaf);list-style:none}
+.expert>summary::before{content:"＋ ";}
+.expert[open]>summary::before{content:"－ ";}
+details.expert[open]{gap:12px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.mix-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px}
+.mix-row{display:flex;align-items:center;gap:8px;font-size:14px}
+.mix-row span{flex:1;min-width:0}
+.mix-row .input{width:74px;min-height:42px;padding:8px;text-align:right}
+.mix-out{font-size:13.5px;color:var(--ink-2);background:var(--surface-2);border-radius:12px;padding:10px 12px}
+.warn-t{color:var(--warn)}
+.howto summary{cursor:pointer;font-size:13.5px;color:var(--water);font-weight:600}
+.howto p{font-size:13.5px;color:var(--ink-2);margin:8px 0 0}
+@media (max-width:360px){.mix-grid{grid-template-columns:1fr}}

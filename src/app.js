@@ -177,7 +177,49 @@ const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ
 /* ================== Parámetros físicos ================== */
 const SUB_AW = { universal: .20, peat: .24, cactus: .12, soil: .14, bark: .10, acid: .22 }; // agua fácilmente disponible (fracción de volumen)
 const SUB_LABEL = { universal: "Universal", peat: "Turba / fibra de coco", cactus: "Cactus (drenante)", soil: "Tierra de jardín", bark: "Corteza (orquídeas)", acid: "Ácido (acidófilas)" };
-const SOIL_AW = { sand: .08, loam: .14, clay: .17 };
+const SOIL_AW = { sand: .08, loam: .14, clay: .17 }; // compatibilidad con plantas antiguas
+/* 12 clases texturales USDA (arena y arcilla típicas de cada clase) */
+const TEXTURES = {
+  arena: { n: "Arenoso", S: .92, C: .03, t: "No forma bola: se deshace entre los dedos" },
+  arenoso_franco: { n: "Arenoso franco", S: .82, C: .06, t: "Forma una bola frágil" },
+  franco_arenoso: { n: "Franco arenoso", S: .65, C: .10, t: "Bola que se rompe al tocarla; áspero" },
+  franco: { n: "Franco", S: .40, C: .20, t: "Bola estable, tacto suave; el suelo «ideal»" },
+  franco_limoso: { n: "Franco limoso", S: .20, C: .15, t: "Tacto sedoso, como harina" },
+  limo: { n: "Limoso", S: .07, C: .06, t: "Muy sedoso; se encostra al secarse" },
+  franco_arcillo_arenoso: { n: "Franco arcillo-arenoso", S: .60, C: .27, t: "Algo pegajoso pero áspero" },
+  franco_arcilloso: { n: "Franco arcilloso", S: .33, C: .34, t: "Forma un churro que se agrieta al doblarlo" },
+  franco_arcillo_limoso: { n: "Franco arcillo-limoso", S: .10, C: .34, t: "Churro sedoso y algo pegajoso" },
+  arcillo_arenoso: { n: "Arcillo-arenoso", S: .52, C: .42, t: "Pegajoso con granos de arena" },
+  arcillo_limoso: { n: "Arcillo-limoso", S: .07, C: .47, t: "Muy pegajoso y sedoso" },
+  arcilla: { n: "Arcilloso", S: .20, C: .60, t: "Churro flexible, muy pegajoso y brillante" },
+};
+/* Saxton & Rawls (2006): capacidad de campo y punto de marchitez a partir de arena, arcilla y materia orgánica */
+function saxton(S, C, OM) {
+  OM = clamp(+OM || 0, 0, 8);
+  const t1500 = -0.024 * S + 0.487 * C + 0.006 * OM + 0.005 * S * OM - 0.013 * C * OM + 0.068 * S * C + 0.031;
+  const wp = t1500 + (0.14 * t1500 - 0.02);
+  const t33 = -0.251 * S + 0.195 * C + 0.011 * OM + 0.006 * S * OM - 0.027 * C * OM + 0.452 * S * C + 0.299;
+  const fc = t33 + (1.283 * t33 * t33 - 0.374 * t33 - 0.015);
+  return { fc: clamp(fc, .03, .6), wp: clamp(wp, .01, .45), aw: clamp(fc - wp, .02, .3) };
+}
+function soilInfo(p) {
+  const gravel = clamp(+p.gravel || 0, 0, 80) / 100;
+  if (p.awOverride > 0) return { aw: p.awOverride / 1000, label: "Agua útil medida: " + p.awOverride + " mm/m", fc: null, wp: null };
+  if (SOIL_AW[p.soil]) return { aw: SOIL_AW[p.soil] * (1 - gravel), label: { sand: "Arenoso", loam: "Franco", clay: "Arcilloso" }[p.soil] };
+  let S, C, label;
+  if (p.soil === "custom") { S = clamp(+p.sand || 40, 0, 100) / 100; C = clamp(+p.clay || 20, 0, 100 - S * 100) / 100; label = `Análisis: ${Math.round(S * 100)} % arena, ${Math.round(C * 100)} % arcilla, ${Math.round((1 - S - C) * 100)} % limo`; }
+  else { const t = TEXTURES[p.soil] || TEXTURES.franco; S = t.S; C = t.C; label = t.n; }
+  const r = saxton(S, C, p.om != null && p.om !== "" ? +p.om : 2);
+  return { aw: r.aw * (1 - gravel), fc: r.fc, wp: r.wp, label: label + (gravel ? `, ${Math.round(gravel * 100)} % piedras` : "") };
+}
+/* Componentes de sustrato: agua fácilmente disponible por volumen */
+const MIX = {
+  turba: { n: "Turba", aw: .25 }, coco: { n: "Fibra de coco", aw: .23 }, compost: { n: "Compost", aw: .20 }, humus: { n: "Humus de lombriz", aw: .22 },
+  tierra: { n: "Tierra de jardín", aw: .14 }, vermiculita: { n: "Vermiculita", aw: .24 }, perlita: { n: "Perlita", aw: .05 }, arena: { n: "Arena gruesa", aw: .04 },
+  corteza: { n: "Corteza de pino", aw: .08 }, arlita: { n: "Arlita", aw: .06 }, akadama: { n: "Akadama", aw: .14 }, kanuma: { n: "Kanuma", aw: .15 }, pomez: { n: "Pómez", aw: .07 }, musgo: { n: "Musgo sphagnum", aw: .35 },
+};
+function mixAW(mix) { let t = 0, a = 0; for (const k in mix) { const v = +mix[k] || 0; if (MIX[k] && v > 0) { t += v; a += v * MIX[k].aw; } } return t ? a / t : .2; }
+function subInfo(p) { if (p.sub === "mix" && p.mix) return { aw: mixAW(p.mix), label: "Mezcla: " + Object.entries(p.mix).filter(([, v]) => v > 0).map(([k, v]) => v + " % " + MIX[k].n.toLowerCase()).join(", ") }; return { aw: SUB_AW[p.sub] || .2, label: SUB_LABEL[p.sub] || "Universal" }; }
 const MAT_K = { plastic: 1.0, terracotta: 1.18, fabric: 1.12, tray: 1.05, glazed: 1.0 };
 const SUN_K = { out: { full: 1, part: .75, shade: .55 }, cov: { full: .9, part: .7, shade: .5 }, in: { full: 1.25, part: 1, shade: .7 } };
 const RAIN_EXPO = { out: 1, cov: .15, in: 0 };
@@ -190,8 +232,8 @@ function spec(p) {
 function params(p) {
   const S = spec(p);
   let taw, area;
-  if (p.cont === "ground") { taw = (+p.root || 30) * 10 * SOIL_AW[p.soil || "loam"]; area = +p.area || 1; }
-  else { taw = (+p.depth || 15) * 10 * (SUB_AW[p.sub] || .2); const r = (+p.diam || 15) / 200; area = Math.PI * r * r; }
+  if (p.cont === "ground") { taw = (+p.root || 30) * 10 * soilInfo(p).aw; area = +p.area || 1; }
+  else { taw = (+p.depth || 15) * 10 * subInfo(p).aw; const r = (+p.diam || 15) / 200; area = Math.PI * r * r; }
   const pDep = clamp(+S.p || .5, .1, .95);
   const k = (+S.kc || .8) * SUN_K[p.place || "out"][p.sun || "full"] * (+p.size || 1) * (p.cont === "pot" ? (MAT_K[p.mat] || 1) : 1) * (p.cal || 1);
   return { S, taw, raw: taw * pDep, area, k, drain: p.cont === "pot" ? 1.1 : 1 };
@@ -558,7 +600,7 @@ function mkPlant(type, o = {}) {
   const p = {
     id: uid(), type, name: c.n || "Planta", place: c.place || "out", sun: c.sun || "full", cont: ground ? "ground" : "pot", size: c.size || "1.5",
     diam: c.d || 20, depth: Math.max(5, Math.round((c.d || 20) * .9)), mat: c.sub === "cactus" ? "terracotta" : (type === "tomate_semillero" || type === "microgreens") ? "tray" : "plastic", sub: c.sub === "soil" ? "universal" : (c.sub || "universal"),
-    area: c.cat === "cesped" ? 10 : c.cat === "huerto" ? .5 : 1, root: ROOT_DEF[c.cat] || 40, soil: "loam", heat: "auto", last: new Date().toISOString(), log: [], cal: 1
+    area: c.cat === "cesped" ? 10 : c.cat === "huerto" ? .5 : 1, root: ROOT_DEF[c.cat] || 40, soil: "franco", om: 2, gravel: 0, heat: "auto", last: new Date().toISOString(), log: [], cal: 1
   };
   if (type === "tomate_semillero") { p.diam = 5; p.depth = 5; }
   return Object.assign(p, o);
@@ -572,9 +614,59 @@ function render() {
   $("#locName").textContent = S.loc ? S.loc.name : "Elegir ciudad";
   if (VIEW === "today") renderToday(); else if (VIEW === "plants") renderPlants(); else if (VIEW === "weather") renderWeather(); else if (VIEW === "ai") renderAI();
 }
+/* Fotos de referencia de cada especie: Wikipedia (Wikimedia Commons), con caché local */
+const PH_KEY = "rocio.photos"; let PHOTOS = {}; try { PHOTOS = JSON.parse(localStorage.getItem(PH_KEY) || "{}"); } catch (e) { }
+const PHOTO_OK = !IN_CLAUDE;
+function spKey(sp) { return sp.id && sp.id !== "x" ? sp.id : "c:" + norm(sp.sci || sp.n); }
+function wikiTitle(sp) {
+  let t = String(sp.sci || "").replace(/'[^']*'/g, "").replace(/\b(spp?|var|subsp|f)\..*$/i, "").split("/")[0].replace(/\s+/g, " ").trim();
+  if (!t || /^varias$/i.test(t)) t = ""; return t;
+}
+function photoOf(sp) { const e = PHOTOS[spKey(sp)]; return e && e.u ? e : null; }
+function savePhotos() { try { localStorage.setItem(PH_KEY, JSON.stringify(PHOTOS)); } catch (e) { } }
+let phQueue = new Map(), phTimer = null, phBusy = false;
+function wantPhoto(sp) { if (!PHOTO_OK) return; const k = spKey(sp); const e = PHOTOS[k]; if (e && (e.u || Date.now() - (e.t || 0) < 7 * 864e5)) return; phQueue.set(k, sp); clearTimeout(phTimer); phTimer = setTimeout(flushPhotos, 120); }
+async function wikiBatch(lang, titles) {
+  const u = `https://${lang}.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageimages&piprop=thumbnail&pithumbsize=360&redirects=1&titles=` + encodeURIComponent(titles.join("|"));
+  const j = await fetchJSON(u, 9000); const q = j.query || {}, map = {};
+  const alias = {}; (q.normalized || []).forEach(n => alias[n.to] = n.from); (q.redirects || []).forEach(r => alias[r.to] = alias[r.from] || r.from);
+  for (const id in (q.pages || {})) { const pg = q.pages[id]; if (pg.thumbnail && pg.thumbnail.source) { let orig = pg.title; while (alias[orig] && !titles.includes(orig)) orig = alias[orig]; map[orig] = { u: pg.thumbnail.source, w: lang + ":" + pg.title }; } }
+  return map;
+}
+async function wikiSearch(lang, q) {
+  const u = `https://${lang}.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrlimit=1&gsrsearch=${encodeURIComponent(q)}&prop=pageimages&piprop=thumbnail&pithumbsize=360`;
+  const j = await fetchJSON(u, 9000); const pages = (j.query && j.query.pages) || {}; for (const id in pages) { const pg = pages[id]; if (pg.thumbnail) return { u: pg.thumbnail.source, w: lang + ":" + pg.title }; } return null;
+}
+async function flushPhotos() {
+  if (phBusy || !phQueue.size) return; phBusy = true;
+  const items = [...phQueue.entries()].slice(0, 40); items.forEach(([k]) => phQueue.delete(k));
+  const found = {};
+  try {
+    for (const lang of ["es", "en"]) {
+      const pend = items.filter(([k]) => !found[k]).map(([k, sp]) => [k, wikiTitle(sp)]).filter(([, t]) => t);
+      for (let i = 0; i < pend.length; i += 20) {
+        const chunk = pend.slice(i, i + 20); const m = await wikiBatch(lang, [...new Set(chunk.map(c => c[1]))]);
+        chunk.forEach(([k, t]) => { if (m[t]) found[k] = m[t]; });
+      }
+    }
+    for (const [k, sp] of items) { if (found[k]) continue; try { const r = await wikiSearch("es", (sp.n || "").replace(/\(.*?\)/g, "") + " planta"); if (r) found[k] = r; } catch (e) { } }
+    for (const [k] of items) PHOTOS[k] = found[k] ? Object.assign({ t: Date.now() }, found[k]) : { u: "", t: Date.now() };
+    savePhotos(); paintPhotos();
+  } catch (e) { items.forEach(([k, sp]) => phQueue.set(k, sp)); }
+  phBusy = false; if (phQueue.size) setTimeout(flushPhotos, 300);
+}
+function paintPhotos() {
+  $$(".av[data-sp]").forEach(el => { if (el.querySelector("img")) return; const e = PHOTOS[el.dataset.sp]; if (e && e.u) { el.innerHTML = `<img src="${esc(e.u)}" alt="" loading="lazy">`; el.classList.add("ph"); } });
+  $$("[data-hero-sp]").forEach(el => { const e = PHOTOS[el.dataset.heroSp]; if (e && e.u && !el.querySelector("img")) { el.innerHTML = `<img src="${esc(e.u)}" alt=""><a class="credit" href="https://${e.w.split(":")[0]}.wikipedia.org/wiki/${encodeURIComponent(e.w.split(":").slice(1).join(":"))}" target="_blank" rel="noopener">Foto: Wikipedia</a>`; el.classList.remove("hidden"); } });
+}
 function avatar(p, lg) {
-  const c = spec(p).cat, t = thumbs[p.id];
-  return `<div class="av${lg ? " lg" : ""}" style="color:${CAT_TINT[c] || "var(--leaf)"};background:color-mix(in srgb, ${CAT_TINT[c] || "#2c6a4c"} 14%, var(--surface))">${t ? `<img src="${t}" alt="">` : glyph(c)}</div>`;
+  const sp = spec(p), c = sp.cat, t = thumbs[p.id], k = spKey(sp), ph = !t && photoOf(sp);
+  if (!t && !ph) wantPhoto(sp);
+  return `<div class="av${lg ? " lg" : ""}${t || ph ? " ph" : ""}" data-sp="${esc(k)}" style="color:${CAT_TINT[c] || "var(--leaf)"};background:color-mix(in srgb, ${CAT_TINT[c] || "#2c6a4c"} 14%, var(--surface))">${t ? `<img src="${t}" alt="">` : ph ? `<img src="${esc(ph.u)}" alt="" loading="lazy">` : glyph(c)}</div>`;
+}
+function avatarSp(sp) {
+  const k = spKey(sp), ph = photoOf(sp);
+  return `<div class="av${ph ? " ph" : ""}" data-sp="${esc(k)}" data-lazy="${esc(sp.id)}" style="color:${CAT_TINT[sp.cat]};background:color-mix(in srgb, ${CAT_TINT[sp.cat]} 14%, var(--surface))">${ph ? `<img src="${esc(ph.u)}" alt="" loading="lazy">` : glyph(sp.cat)}</div>`;
 }
 function ring(m, status, big) {
   const r = big ? 52 : 23, sz = big ? 120 : 56, sw = big ? 10 : 6, C = 2 * Math.PI * r;
@@ -872,7 +964,10 @@ function openDetail(id) {
   const p = S.plants.find(x => x.id === id); if (!p) return; const s = simulate(p), sp = spec(p), today = s.today;
   const log = [...(p.log || [])].sort((a, b) => b.t.localeCompare(a.t)).slice(0, 6);
   const fbTxt = { wet: "aún húmeda", ok: "en su punto", dry: "muy seca" };
-  const html = sheetHead(esc(p.name)) + `
+  const own = thumbs[p.id], ph = photoOf(sp);
+  if (!own && !ph) wantPhoto(sp);
+  const hero = own ? `<div class="pl-hero"><img src="${own}" alt=""></div>` : ph ? `<div class="pl-hero"><img src="${esc(ph.u)}" alt=""><a class="credit" href="https://${ph.w.split(":")[0]}.wikipedia.org/wiki/${encodeURIComponent(ph.w.split(":").slice(1).join(":"))}" target="_blank" rel="noopener">Foto: Wikipedia</a></div>` : PHOTO_OK ? `<div class="pl-hero hidden" data-hero-sp="${esc(spKey(sp))}"></div>` : "";
+  const html = sheetHead(esc(p.name)) + hero + `
     <div class="detail-top"><div class="big-ring">${ring(s.moist, s.status, true)}<div class="c"><div><b class="num">${Math.round(s.moist * 100)}%</b><span>agua útil</span></div></div></div>
       <div style="display:grid;gap:6px;min-width:0">${statusPill(s)}<div style="font-family:var(--display);font-size:22px;font-weight:700;line-height:1.15">${whenText(s)}</div><div class="muted small">${fmtL(s.liters)}${p.cont === "pot" ? ", hasta que empiece a salir por el plato" : ""} · ${s.conf}</div></div></div>
     ${s.waitRain ? `<div class="alert info" style="margin-top:14px">${svg("rain")}<div>Se esperan <b>${nf1.format(s.waitRain.mm)} mm</b> ${niceDay(s.waitRain.date, today)} (${Math.round(s.waitRain.prob)} %). Si al final no llueve, riega ${fmtL(s.liters)}.</div></div>` : ""}
@@ -881,7 +976,7 @@ function openDetail(id) {
     <div class="kv num" style="margin-top:12px"><div><span>Consumo hoy</span><b>${nf1.format(s.etcToday)} mm</b></div><div><span>Agua útil total</span><b>${fmtL(s.P.taw * s.P.area)}</b></div><div><span>Umbral de riego</span><b>${Math.round((1 - s.P.raw / s.P.taw) * 100)} %</b></div><div><span>Kc especie</span><b>${nf1.format(+sp.kc)}${p.cal && Math.abs(p.cal - 1) > .04 ? ` <span style="display:inline;font-size:12px;color:var(--ink-3)">×${p.cal.toFixed(2)}</span>` : ""}</b></div></div>
     ${sp.note ? `<div class="alert info" style="margin-top:12px">${svg("leaf")}<div>${esc(sp.note)}</div></div>` : ""}
     <div class="card" style="margin-top:12px;padding:14px"><div class="lbl" style="margin-bottom:4px">Historial de riegos</div><div class="hist num">${log.length ? log.map(e => `<div><span>${new Date(e.t).toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" })} · ${new Date(e.t).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })}</span><span class="faint">${fbTxt[e.fb] || ""}</span></div>`).join("") : `<div><span>Último riego</span><span>${niceDay(p.last.slice(0, 10), today)}</span></div>`}</div></div>
-    <div class="muted small" style="margin-top:12px">${esc(sp.n)}${sp.sci ? ` · <i>${esc(sp.sci)}</i>` : ""} · ${{ in: "Interior", out: "Exterior", cov: "Exterior cubierto" }[p.place]} · ${p.cont === "pot" ? "maceta " + p.diam + "×" + p.depth + " cm, " + (SUB_LABEL[p.sub] || "") : p.area + " m², raíces " + p.root + " cm"}</div>
+    <div class="muted small" style="margin-top:12px">${esc(sp.n)}${sp.sci ? ` · <i>${esc(sp.sci)}</i>` : ""} · ${{ in: "Interior", out: "Exterior", cov: "Exterior cubierto" }[p.place]} · ${p.cont === "pot" ? "maceta " + p.diam + "×" + p.depth + " cm · " + esc(subInfo(p).label) : p.area + " m², raíces " + p.root + " cm · suelo " + esc(soilInfo(p).label)}</div>
     <div style="display:flex;gap:8px;margin-top:16px"><button class="btn" style="flex:1" data-act="edit" data-id="${p.id}">${svg("edit")} Editar</button><button class="btn ghost" data-act="del" data-id="${p.id}" style="color:var(--crit)">${svg("trash")} Eliminar</button></div>`;
   openSheet(html);
 }
@@ -912,17 +1007,24 @@ function openAdd() {
     <div class="chips" style="margin-top:10px">${cats.map(c => `<button class="chip${c === catFilter ? " on" : ""}" data-act="catF" data-c="${c}">${c === "all" ? "Todas" : CAT_LABEL[c]}</button>`).join("")}</div>
     <div class="cat-list" id="catList"></div>`, sh => { const i = $("#catQ", sh); i.oninput = () => { catQ = i.value; drawCat(); }; drawCat(); });
 }
+let catIO = null;
+function lazyCatPhotos() {
+  if (!PHOTO_OK) return; if (catIO) catIO.disconnect();
+  catIO = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { const sp = CAT_BY_ID[en.target.dataset.lazy]; if (sp) wantPhoto(sp); catIO.unobserve(en.target); } }), { root: $("#sheet"), rootMargin: "200px" }) : null;
+  $$("#catList .av[data-lazy]").forEach(el => { if (el.querySelector("img")) return; if (catIO) catIO.observe(el); else wantPhoto(CAT_BY_ID[el.dataset.lazy]); });
+}
 function drawCat() {
   const q = norm(catQ); const L = CATALOG.filter(c => (catFilter === "all" || c.cat === catFilter) && (!q || norm(c.n + " " + c.sci).includes(q)));
   const el = $("#catList"); if (!el) return;
-  el.innerHTML = L.slice(0, 120).map(c => `<button class="cat-item" data-act="pick" data-t="${c.id}"><div class="av" style="color:${CAT_TINT[c.cat]};background:color-mix(in srgb, ${CAT_TINT[c.cat]} 14%, var(--surface))">${glyph(c.cat)}</div><div style="min-width:0"><b>${esc(c.n)}</b><i>${esc(c.sci)}</i></div><div class="tag">${CAT_LABEL[c.cat]}<br>${c.place === "in" ? "interior" : "exterior"}</div></button>`).join("") +
-    (L.length ? "" : !AI_FULL() ? `<div class="empty"><div>No está en el catálogo. Elige «Otra planta» en la categoría más parecida y ajusta su maceta.</div></div>` : `<div class="empty"><div>No está en el catálogo.</div><button class="btn primary" data-act="customAI" data-q="${esc(catQ)}">${svg("wand")} Configurar «${esc(catQ)}» con IA</button></div>`);
+  el.innerHTML = L.slice(0, 160).map(c => `<button class="cat-item" data-act="pick" data-t="${c.id}">${avatarSp(c)}<div style="min-width:0"><b>${esc(c.n)}</b><i>${esc(c.sci)}</i></div><div class="tag">${CAT_LABEL[c.cat]}<br>${c.place === "in" ? "interior" : "exterior"}</div></button>`).join("") +
+    (L.length > 160 ? `<div class="hint" style="padding:10px 8px">Mostrando 160 de ${L.length}. Escribe para afinar la búsqueda.</div>` : "") + (L.length ? "" : !AI_FULL() ? `<div class="empty"><div>No está en el catálogo. Elige «Otra planta» en la categoría más parecida y ajusta su maceta.</div></div>` : `<div class="empty"><div>No está en el catálogo.</div><button class="btn primary" data-act="customAI" data-q="${esc(catQ)}">${svg("wand")} Configurar «${esc(catQ)}» con IA</button></div>`);
+  lazyCatPhotos();
 }
 /* Formulario */
 function openForm(p, isNew) {
   const sp = spec(p); const seg = (name, val, opts) => `<div class="seg" data-seg="${name}">${opts.map(([v, l]) => `<button type="button" data-v="${v}" class="${String(val) === String(v) ? "on" : ""}">${l}</button>`).join("")}</div>`;
   const html = sheetHead(isNew ? "Nueva planta" : "Editar planta") + `
-    <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px">${avatar(p, true)}<div><b>${esc(sp.n)}</b><div class="faint small"><i>${esc(sp.sci || "")}</i></div>${p.custom ? '<span class="pill" style="margin-top:4px">Configurada por IA</span>' : ""}</div></div>
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px"><label for="fPhoto" class="ph-pick" title="Cambiar foto">${avatar(p, true)}<span class="ph-cam">${svg("camera")}</span></label><input type="file" id="fPhoto" accept="image/*" class="hidden"><div><b>${esc(sp.n)}</b><div class="faint small"><i>${esc(sp.sci || "")}</i></div>${p.custom ? '<span class="pill" style="margin-top:4px">Configurada por IA</span>' : ""}<div class="hint" style="margin-top:4px">Toca la imagen para poner una foto de tu planta</div></div></div>
     <form id="pf" class="stack">
       <div class="field"><label for="fName">Nombre</label><input class="input" id="fName" value="${esc(p.name)}" maxlength="60"></div>
       <div class="field"><span class="lbl">Dónde está</span>${seg("place", p.place, [["out", "Exterior"], ["cov", "Bajo techo"], ["in", "Interior"]])}</div>
@@ -930,25 +1032,54 @@ function openForm(p, isNew) {
       <div class="field"><span class="lbl">Cultivo</span>${seg("cont", p.cont, [["pot", "Maceta"], ["ground", "En suelo"]])}</div>
       <div id="potF" class="stack ${p.cont === "pot" ? "" : "hidden"}"><div class="row2"><div class="field"><label for="fDiam">Diámetro (cm)</label><input class="input num" id="fDiam" type="number" inputmode="numeric" min="3" max="150" value="${p.diam}"></div><div class="field"><label for="fDepth">Profundidad (cm)</label><input class="input num" id="fDepth" type="number" inputmode="numeric" min="3" max="120" value="${p.depth}"></div></div>
         <div class="row2"><div class="field"><label for="fMat">Maceta</label><select class="input" id="fMat">${[["plastic", "Plástico"], ["glazed", "Cerámica esmaltada"], ["terracotta", "Barro"], ["fabric", "Tela / geotextil"], ["tray", "Semillero / alvéolos"]].map(([v, l]) => `<option value="${v}"${p.mat === v ? " selected" : ""}>${l}</option>`).join("")}</select></div>
-        <div class="field"><label for="fSub">Sustrato</label><select class="input" id="fSub">${Object.entries(SUB_LABEL).map(([v, l]) => `<option value="${v}"${p.sub === v ? " selected" : ""}>${l}</option>`).join("")}</select></div></div></div>
+        <div class="field"><label for="fSub">Sustrato</label><select class="input" id="fSub">${Object.entries(SUB_LABEL).map(([v, l]) => `<option value="${v}"${p.sub === v ? " selected" : ""}>${l}</option>`).join("")}<option value="mix"${p.sub === "mix" ? " selected" : ""}>Mi propia mezcla…</option></select></div></div>
+        <div id="mixF" class="expert ${p.sub === "mix" ? "" : "hidden"}"><div class="lbl">Tu mezcla de sustrato (%)</div>
+          <div class="mix-grid">${Object.entries(MIX).map(([k, m]) => `<label class="mix-row" for="mx_${k}"><span>${m.n}</span><input class="input num" type="number" inputmode="numeric" min="0" max="100" step="5" id="mx_${k}" data-mix="${k}" value="${(p.mix && p.mix[k]) || ""}" placeholder="0"></label>`).join("")}</div>
+          <div class="mix-out" id="mixOut"></div></div></div>
       <div id="groundF" class="stack ${p.cont === "ground" ? "" : "hidden"}"><div class="row2"><div class="field"><label for="fArea">Superficie (m²)</label><input class="input num" id="fArea" type="number" step="0.05" min="0.05" value="${p.area}"></div><div class="field"><label for="fRoot">Raíces (cm)</label><input class="input num" id="fRoot" type="number" min="5" max="150" value="${p.root}"></div></div>
-        <div class="field"><label for="fSoil">Suelo</label><select class="input" id="fSoil">${[["sand", "Arenoso"], ["loam", "Franco"], ["clay", "Arcilloso"]].map(([v, l]) => `<option value="${v}"${p.soil === v ? " selected" : ""}>${l}</option>`).join("")}</select></div></div>
+        <div class="field"><label for="fSoil">Tipo de suelo</label><select class="input" id="fSoil">${Object.entries(TEXTURES).map(([v, t]) => `<option value="${v}"${(p.soil === v || ({ sand: "franco_arenoso", loam: "franco", clay: "arcilla" })[p.soil] === v) ? " selected" : ""}>${t.n}</option>`).join("")}<option value="custom"${p.soil === "custom" ? " selected" : ""}>Tengo un análisis de suelo…</option></select><span class="hint" id="soilHint"></span></div>
+        <details class="expert" id="soilX" ${p.soil === "custom" || p.gravel > 0 || p.awOverride > 0 || (p.om != null && +p.om !== 2) ? "open" : ""}><summary>Modo experto del suelo</summary>
+          <div id="soilCustom" class="row3 ${p.soil === "custom" ? "" : "hidden"}"><div class="field"><label for="fSand">Arena %</label><input class="input num" id="fSand" type="number" min="0" max="100" value="${p.sand ?? 40}"></div><div class="field"><label for="fClay">Arcilla %</label><input class="input num" id="fClay" type="number" min="0" max="100" value="${p.clay ?? 20}"></div><div class="field"><label>Limo %</label><input class="input num" id="fSilt" disabled></div></div>
+          <div class="row2"><div class="field"><label for="fOM">Materia orgánica %</label><input class="input num" id="fOM" type="number" min="0" max="8" step="0.5" value="${p.om ?? 2}"></div><div class="field"><label for="fGravel">Piedras / grava %</label><input class="input num" id="fGravel" type="number" min="0" max="80" step="5" value="${p.gravel || 0}"></div></div>
+          <div class="field"><label for="fAWo">Agua útil medida (mm por metro, opcional)</label><input class="input num" id="fAWo" type="number" min="20" max="300" placeholder="Déjalo vacío para calcularla" value="${p.awOverride || ""}"><span class="hint">Si tienes un análisis con capacidad de campo y punto de marchitez, su diferencia en mm/m va aquí.</span></div>
+          <div class="mix-out" id="soilOut"></div>
+          <details class="howto"><summary>¿Cómo sé qué suelo tengo?</summary><p>Coge un puñado de tierra húmeda y apriétalo: si se deshace, es <b>arenoso</b>; si forma una bola que se rompe al tocarla, <b>franco arenoso</b>; si la bola aguanta y es suave, <b>franco</b>; si puedes hacer un churro que se dobla sin romperse y mancha brillante, <b>arcilloso</b>. Para afinar: llena un bote con tierra y agua, agita y déjalo 2 días; la arena se deposita abajo, encima el limo y arriba la arcilla. Mide cada capa para sacar los porcentajes.</p></details>
+        </details></div>
       <div class="field"><span class="lbl">Tamaño de la planta</span>${seg("size", p.size, [["1", "Pequeña"], ["1.5", "Mediana"], ["2.3", "Grande"]])}<span class="hint">Una planta que desborda su maceta transpira más agua de la que cabe en ella.</span></div>
       <div class="field ${p.place === "in" ? "" : "hidden"}" id="heatF"><label for="fHeat">Calefacción</label><select class="input" id="fHeat">${[["auto", "Automático según la temperatura"], ["on", "Encendida"], ["off", "Apagada"]].map(([v, l]) => `<option value="${v}"${p.heat === v ? " selected" : ""}>${l}</option>`).join("")}</select></div>
       <div class="field"><label for="fLast">Último riego</label><input class="input" id="fLast" type="datetime-local" value="${localInput(new Date(p.last))}" max="${localInput(new Date())}"><span class="hint">Si no lo recuerdas, pon un día aproximado. Se corrige solo cuando riegues.</span></div>
       <button class="btn primary block" type="submit">${isNew ? "Añadir planta" : "Guardar cambios"}</button>
     </form>`;
   openSheet(html, sh => {
+    const soilUpd = () => {
+      const tmp = { soil: $("#fSoil").value, sand: +$("#fSand").value, clay: +$("#fClay").value, om: $("#fOM").value, gravel: +$("#fGravel").value, awOverride: +$("#fAWo").value || 0 };
+      $("#soilCustom").classList.toggle("hidden", tmp.soil !== "custom"); if (tmp.soil === "custom") $("#soilX").open = true;
+      $("#fSilt").value = Math.max(0, 100 - tmp.sand - tmp.clay);
+      const t = TEXTURES[tmp.soil]; $("#soilHint").textContent = t ? "Al tacto: " + t.t.toLowerCase() + "." : "";
+      const i = soilInfo(tmp); $("#soilOut").innerHTML = (i.fc != null ? `Capacidad de campo <b>${Math.round(i.fc * 100)} %</b> · Punto de marchitez <b>${Math.round(i.wp * 100)} %</b><br>` : "") + `Agua útil <b>${Math.round(i.aw * 1000)} mm por metro</b> de suelo`;
+    };
+    ["#fSoil", "#fSand", "#fClay", "#fOM", "#fGravel", "#fAWo"].forEach(id => $(id, sh).addEventListener("input", soilUpd)); soilUpd();
+    const mixUpd = () => {
+      const m = {}; $$("[data-mix]", sh).forEach(i => { const v = +i.value; if (v > 0) m[i.dataset.mix] = v; }); const tot = Object.values(m).reduce((a, b) => a + b, 0);
+      $("#mixOut").innerHTML = tot ? `Total <b class="${tot === 100 ? "" : "warn-t"}">${tot} %</b>${tot !== 100 ? " (se ajusta en proporción)" : ""} · Agua fácilmente disponible <b>${Math.round(mixAW(m) * 100)} %</b> del volumen` : "Pon el porcentaje de cada componente.";
+      return m;
+    };
+    $("#fSub", sh).addEventListener("change", e => $("#mixF").classList.toggle("hidden", e.target.value !== "mix"));
+    $$("[data-mix]", sh).forEach(i => i.addEventListener("input", mixUpd)); mixUpd();
+    $("#fPhoto", sh).onchange = async e => { const f = e.target.files[0]; if (!f) return; try { const im = await resizeImage(f, 600); p._thumb = im.thumb; const av = $(".ph-pick .av", sh); av.innerHTML = `<img src="${im.thumb}" alt="">`; av.classList.add("ph"); } catch (err) { toast("No pude leer esa foto"); } };
     $$("[data-seg] button", sh).forEach(b => b.onclick = () => { $$("button", b.parentNode).forEach(x => x.classList.toggle("on", x === b)); const n = b.parentNode.dataset.seg;
       if (n === "cont") { $("#potF").classList.toggle("hidden", b.dataset.v !== "pot"); $("#groundF").classList.toggle("hidden", b.dataset.v !== "ground"); }
       if (n === "place") $("#heatF").classList.toggle("hidden", b.dataset.v !== "in"); });
     $("#pf").onsubmit = e => {
       e.preventDefault(); const v = n => { const b = $(`[data-seg="${n}"] .on`); return b ? b.dataset.v : null; };
       const last = new Date($("#fLast").value || Date.now()); if (last > new Date(Date.now() + 6e4)) { toast("El último riego no puede ser en el futuro"); return; }
-      Object.assign(p, { name: $("#fName").value.trim() || sp.n, place: v("place"), sun: v("sun"), cont: v("cont"), size: v("size"), diam: +$("#fDiam").value, depth: +$("#fDepth").value, mat: $("#fMat").value, sub: $("#fSub").value, area: +$("#fArea").value, root: +$("#fRoot").value, soil: $("#fSoil").value, heat: $("#fHeat").value, last: last.toISOString() });
+      Object.assign(p, { name: $("#fName").value.trim() || sp.n, place: v("place"), sun: v("sun"), cont: v("cont"), size: v("size"), diam: +$("#fDiam").value, depth: +$("#fDepth").value, mat: $("#fMat").value, sub: $("#fSub").value, area: +$("#fArea").value, root: +$("#fRoot").value, soil: $("#fSoil").value, sand: +$("#fSand").value, clay: +$("#fClay").value, om: $("#fOM").value === "" ? 2 : +$("#fOM").value, gravel: +$("#fGravel").value || 0, awOverride: +$("#fAWo").value || 0, heat: $("#fHeat").value, last: last.toISOString() });
+      if (p.sub === "mix") { const m = mixUpd(); if (!Object.keys(m).length) { toast("Indica los componentes de tu mezcla"); return; } p.mix = m; }
+      if (p.soil === "custom" && p.sand + p.clay > 100) { toast("Arena + arcilla no pueden pasar del 100 %"); return; }
       if (p.cont === "pot" && !(p.diam > 0 && p.depth > 0)) { toast("Indica el diámetro y la profundidad de la maceta"); return; }
       if (p.cont === "ground" && !(p.area > 0 && p.root > 0)) { toast("Indica la superficie y la profundidad de las raíces"); return; }
-      if (isNew) { S.plants.push(p); if (p._thumb) { saveThumb(p.id, p._thumb); p.hasThumb = true; } }
+      if (isNew) S.plants.push(p);
+      if (p._thumb) { saveThumb(p.id, p._thumb); p.hasThumb = true; }
       delete p._thumb; save(); closeSheet(); render(); toast(isNew ? "Planta añadida" : "Cambios guardados");
     };
   });

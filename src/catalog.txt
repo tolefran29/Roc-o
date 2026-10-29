@@ -223,3 +223,333 @@ dionaea|Venus atrapamoscas|Dionaea muscipula|carnivoras|1.0|.15|-5|35|out|full|p
 sarracenia|Sarracenia|Sarracenia spp.|carnivoras|1.05|.15|-15|38|out|full|peat|14|1|Plato siempre con agua destilada en temporada.
 drosera|Drosera|Drosera capensis|carnivoras|1.0|.15|0|35|in|full|peat|10|1|Sustrato empapado con agua sin minerales.
 nepenthes|Nepenthes|Nepenthes spp.|carnivoras|.9|.3|15|32|in|part|bark|14|1.5|Humedad ambiental alta; agua sin cal.
+tomate_rosa|Tomate rosa (Barbastro / Aragón)|Solanum lycopersicum|huerto|1.15|.4|10|35|out|full|soil|40|2.3|Fruto grande y de piel fina: riego constante y profundo para que no se raje.
+tomate_pera|Tomate pera|Solanum lycopersicum|huerto|1.1|.4|10|35|out|full|soil|40|2.3|Ideal para conserva; riega al pie.
+tomate_corazon|Tomate corazón de buey|Solanum lycopersicum|huerto|1.15|.4|10|35|out|full|soil|40|2.3|Necesita tutor y riego abundante en verano.
+tomatillo|Tomatillo mexicano|Physalis philadelphica|huerto|1.0|.4|10|35|out|full|soil|40|2.3|Siembra al menos dos plantas para que se polinicen.
+physalis|Physalis (uchuva)|Physalis peruviana|frutales|.9|.45|3|33|out|full|universal|35|1.5|Reduce el riego al madurar el fruto.
+pimiento_padron|Pimiento de Padrón|Capsicum annuum 'Padrón'|huerto|1.05|.3|10|35|out|full|universal|25|1.5|El estrés hídrico hace que pique más.
+pimiento_piquillo|Pimiento del piquillo|Capsicum annuum|huerto|1.05|.3|10|35|out|full|soil|35|1.5|Riego regular en floración.
+jalapeno|Jalapeño|Capsicum annuum 'Jalapeño'|huerto|.95|.35|10|36|out|full|universal|25|1.5|Deja secar ligeramente la superficie.
+habanero|Habanero|Capsicum chinense|huerto|.95|.35|12|36|out|full|universal|25|1.5|Necesita mucho calor; riego moderado.
+berenjena_listada|Berenjena listada de Gandía|Solanum melongena|huerto|1.05|.45|12|36|out|full|soil|40|2.3|Mucha agua en verano.
+pepinillo|Pepinillo|Cucumis sativus|huerto|1.0|.5|12|35|out|full|universal|30|2.3|Cosecha frecuente y riego constante.
+calabaza_violin|Calabaza violín|Cucurbita moschata|huerto|1.0|.4|10|36|out|full|soil|60|2.3|Riego profundo y espaciado.
+boniato|Boniato|Ipomoea batatas|huerto|1.05|.65|12|38|out|full|soil|50|2.3|Reduce el riego antes de la cosecha.
+chirivia|Chirivía|Pastinaca sativa|huerto|1.0|.35|-10|28|out|full|soil|30|1|Raíz larga: suelo suelto y profundo.
+nabo|Nabo|Brassica rapa subsp. rapa|huerto|1.0|.5|-5|28|out|full|soil|30|1|Crecimiento rápido con riego regular.
+colinabo|Colinabo|Brassica oleracea var. gongylodes|huerto|1.0|.45|-5|28|out|full|soil|30|1|La sequía lo vuelve leñoso.
+col_bruselas|Coles de Bruselas|Brassica oleracea var. gemmifera|huerto|1.0|.45|-12|28|out|full|soil|45|2.3|Mejoran con las heladas.
+lombarda|Lombarda|Brassica oleracea var. capitata f. rubra|huerto|1.05|.45|-8|30|out|full|soil|40|1.5|Riego regular para formar el cogollo.
+pak_choi|Pak choi|Brassica rapa subsp. chinensis|huerto|1.0|.3|-3|26|out|part|universal|25|1|Con calor se espiga.
+mizuna|Mizuna|Brassica rapa var. nipposinica|huerto|1.0|.3|-5|26|out|part|universal|20|1|Hoja tierna de otoño.
+mostaza|Mostaza de hoja|Brassica juncea|huerto|1.0|.35|-5|28|out|part|universal|20|1|Crece rápido en tiempo fresco.
+escarola|Escarola|Cichorium endivia|huerto|1.0|.3|-5|28|out|part|universal|25|1|Riego regular para evitar que amargue.
+endibia|Endibia|Cichorium intybus var. foliosum|huerto|.95|.4|-5|28|out|part|soil|30|1|Forzado a oscuras en invierno.
+hinojo|Hinojo|Foeniculum vulgare|huerto|1.0|.4|-5|32|out|full|soil|30|1.5|La falta de agua hace que se espigue.
+okra|Okra|Abelmoschus esculentus|huerto|1.0|.45|14|40|out|full|soil|35|2.3|Necesita calor; tolera algo de sequía.
+judia_enrame|Judía de enrame|Phaseolus vulgaris|huerto|1.05|.45|8|32|out|full|soil|35|2.3|Necesita cañas o red para trepar.
+garbanzo|Garbanzo|Cicer arietinum|huerto|.95|.5|-5|35|out|full|soil|35|1.5|Poco riego; el exceso favorece hongos.
+lenteja|Lenteja|Lens culinaris|huerto|.9|.5|-8|32|out|full|soil|30|1|Muy tolerante a la sequía.
+cacahuete|Cacahuete|Arachis hypogaea|huerto|1.0|.5|12|38|out|full|soil|35|1.5|Riego regular en floración.
+quinoa|Quinoa|Chenopodium quinoa|huerto|.9|.6|-2|32|out|full|soil|35|1.5|Tolera la sequía.
+cebolleta|Cebolleta|Allium fistulosum|huerto|1.0|.3|-10|30|out|full|universal|20|1|Riego regular.
+chalota|Chalota|Allium cepa var. aggregatum|huerto|1.0|.35|-10|30|out|full|soil|25|1|Deja de regar al secarse las hojas.
+ajo_tierno|Ajete|Allium sativum|huerto|1.0|.35|-10|30|out|full|soil|25|1|Se cosecha joven.
+berro|Berro|Nasturtium officinale|huerto|1.15|.15|0|26|out|part|peat|20|1|Le gusta el suelo encharcado.
+batata_hoja|Espinaca de Nueva Zelanda|Tetragonia tetragonoides|huerto|1.0|.4|2|35|out|full|universal|30|1.5|Aguanta mejor el calor que la espinaca.
+canonigo_silv|Verdolaga comestible|Portulaca oleracea|huerto|.6|.6|8|40|out|full|universal|20|1|Suculenta: poco riego.
+alcachofa_morada|Alcachofa morada|Cynara cardunculus var. scolymus|huerto|1.0|.45|-5|34|out|full|soil|60|2.3|Riego abundante en primavera.
+cardo|Cardo|Cynara cardunculus|huerto|1.0|.5|-8|35|out|full|soil|60|2.3|Riego regular en verano.
+ruibarbo|Ruibarbo|Rheum rhabarbarum|huerto|1.0|.4|-20|30|out|part|soil|50|2.3|Sus hojas son tóxicas; se comen los tallos.
+jengibre|Jengibre|Zingiber officinale|huerto|.9|.4|12|34|in|part|universal|30|1.5|Sustrato húmedo pero nunca encharcado.
+curcuma|Cúrcuma|Curcuma longa|huerto|.9|.4|14|35|in|part|universal|30|1.5|Reposo en invierno: casi sin riego.
+melon_piel_sapo|Melón piel de sapo|Cucumis melo var. inodorus|huerto|1.05|.4|12|38|out|full|soil|60|2.3|Reduce el riego al madurar.
+fresa_silvestre|Fresa silvestre|Fragaria vesca|huerto|.85|.25|-15|30|out|part|universal|18|1|Prefiere semisombra.
+mejorana|Mejorana|Origanum majorana|aromaticas|.6|.55|-3|35|out|full|cactus|16|1|Deja secar entre riegos.
+ajedrea|Ajedrea|Satureja montana|aromaticas|.45|.7|-12|38|out|full|cactus|16|1|Muy resistente a la sequía.
+hisopo|Hisopo|Hyssopus officinalis|aromaticas|.5|.65|-15|36|out|full|cactus|18|1|Poco riego.
+manzanilla|Manzanilla|Matricaria chamomilla|aromaticas|.75|.5|-5|30|out|full|universal|18|1|Riego moderado.
+borraja|Borraja|Borago officinalis|aromaticas|.85|.45|-3|30|out|full|universal|25|1.5|Atrae abejas.
+capuchina|Capuchina|Tropaeolum majus|flores|.75|.5|2|32|out|full|universal|20|1.5|Flor comestible; no abones en exceso.
+lemongrass|Hierba limón|Cymbopogon citratus|aromaticas|1.0|.4|5|38|out|full|universal|30|1.5|Riego abundante en verano.
+perifollo|Perifollo|Anthriscus cerefolium|aromaticas|.9|.35|-5|26|out|part|universal|16|1|Prefiere frescor y sombra.
+levistico|Levístico|Levisticum officinale|aromaticas|.9|.45|-20|30|out|part|soil|35|2.3|Planta grande y perenne.
+acedera|Acedera|Rumex acetosa|aromaticas|.9|.4|-15|30|out|part|universal|20|1|Riego regular para hojas tiernas.
+menta_piperita|Menta piperita|Mentha × piperita|aromaticas|1.0|.3|-10|32|out|part|universal|20|1.5|En maceta propia: es invasora.
+poleo|Poleo|Mentha pulegium|aromaticas|1.0|.3|-10|32|out|part|universal|18|1|Le gusta la humedad.
+salvia_pina|Salvia piña|Salvia elegans|aromaticas|.7|.5|-3|35|out|full|universal|25|1.5|Floración en otoño.
+lavanda_francesa|Lavanda francesa|Lavandula stoechas|aromaticas|.5|.7|-8|40|out|full|cactus|22|1.5|Odia el encharcamiento.
+tomillo_limon|Tomillo limonero|Thymus × citriodorus|aromaticas|.45|.7|-12|38|out|full|cactus|16|1|Muy poco riego.
+wasabi|Wasabi|Eutrema japonicum|aromaticas|1.0|.2|2|22|out|shade|peat|25|1|Necesita frescor y humedad constantes.
+regaliz|Regaliz|Glycyrrhiza glabra|aromaticas|.8|.5|-10|36|out|full|soil|40|1.5|Raíz profunda.
+caqui|Caqui|Diospyros kaki|frutales|.8|.5|-15|38|out|full|soil|60|2.3|Riego regular en verano para que no tire los frutos.
+membrillo|Membrillero|Cydonia oblonga|frutales|.8|.5|-20|36|out|full|soil|60|2.3|Resistente.
+avellano|Avellano|Corylus avellana|frutales|.85|.5|-25|34|out|part|soil|60|2.3|Le gusta el suelo fresco.
+nogal|Nogal|Juglans regia|frutales|.85|.5|-20|36|out|full|soil|80|2.3|Árbol grande; raíz profunda.
+castano|Castaño|Castanea sativa|frutales|.8|.5|-20|34|out|full|acid|80|2.3|Prefiere suelos ácidos.
+pistacho|Pistachero|Pistacia vera|frutales|.6|.7|-15|45|out|full|soil|60|2.3|Muy resistente a la sequía.
+chirimoyo|Chirimoyo|Annona cherimola|frutales|.85|.45|0|35|out|full|soil|60|2.3|Sensible al frío.
+papaya|Papaya|Carica papaya|frutales|1.0|.4|8|38|in|full|universal|40|2.3|Raíces muy sensibles al encharcamiento.
+pitahaya|Pitahaya|Selenicereus undatus|frutales|.45|.75|5|40|out|full|cactus|35|1.5|Cactus trepador: poco riego.
+feijoa|Feijoa|Acca sellowiana|frutales|.75|.5|-10|36|out|full|universal|45|2.3|Riego regular en fructificación.
+guayabo|Guayabo|Psidium guajava|frutales|.85|.45|2|38|out|full|universal|45|2.3|Sensible a heladas.
+lima|Lima|Citrus × aurantiifolia|frutales|.7|.5|0|40|out|full|universal|40|2.3|Más sensible al frío que el limonero.
+pomelo|Pomelo|Citrus × paradisi|frutales|.7|.5|-2|40|out|full|universal|45|2.3|Riego profundo y espaciado.
+bergamota|Bergamota|Citrus × bergamia|frutales|.7|.5|-2|40|out|full|universal|40|2.3|Como el limonero.
+lima_kaffir|Lima kaffir|Citrus hystrix|frutales|.7|.5|2|38|out|full|universal|35|1.5|Se usan sus hojas en cocina.
+mandarino_satsuma|Satsuma|Citrus unshiu|frutales|.7|.5|-5|40|out|full|universal|40|2.3|El cítrico más resistente al frío.
+madrono|Madroño|Arbutus unedo|frutales|.6|.6|-12|40|out|full|acid|45|2.3|Autóctono; tolera la sequía.
+acerolo|Acerolo|Crataegus azarolus|frutales|.6|.6|-15|40|out|full|soil|50|2.3|Resistente.
+azufaifo|Azufaifo|Ziziphus jujuba|frutales|.6|.65|-20|42|out|full|soil|50|2.3|Muy tolerante a la sequía.
+serbal|Serbal|Sorbus domestica|frutales|.7|.55|-20|36|out|full|soil|60|2.3|Árbol rústico.
+nashi|Nashi (pera asiática)|Pyrus pyrifolia|frutales|.9|.5|-20|35|out|full|soil|60|2.3|Riego regular en verano.
+nectarina|Nectarina|Prunus persica var. nucipersica|frutales|.9|.5|-15|38|out|full|soil|60|2.3|Como el melocotonero.
+paraguayo|Paraguayo|Prunus persica var. platycarpa|frutales|.9|.5|-15|38|out|full|soil|60|2.3|Como el melocotonero.
+ciruelo_japones|Ciruelo japonés|Prunus salicina|frutales|.85|.5|-15|38|out|full|soil|60|2.3|Riego regular hasta la cosecha.
+guindo|Guindo (cerezo ácido)|Prunus cerasus|frutales|.85|.5|-25|35|out|full|soil|60|2.3|Más rústico que el cerezo.
+manzano_columnar|Manzano columnar|Malus domestica|frutales|.9|.45|-20|35|out|full|universal|45|1.5|Ideal para maceta en balcón.
+limonero_4est|Limonero cuatro estaciones|Citrus × limon 'Eureka'|frutales|.7|.5|-2|40|out|full|universal|40|2.3|Florece casi todo el año.
+arandano_rojo|Arándano rojo|Vaccinium macrocarpon|frutales|1.0|.3|-25|30|out|full|acid|30|1|Necesita sustrato ácido y húmedo.
+haskap|Haskap|Lonicera caerulea|frutales|.85|.45|-35|32|out|part|universal|35|1.5|Muy resistente al frío.
+aronia|Aronia|Aronia melanocarpa|frutales|.8|.5|-30|34|out|full|universal|35|1.5|Rústica.
+sauco|Saúco|Sambucus nigra|frutales|.85|.5|-25|34|out|part|soil|50|2.3|Le gusta el suelo fresco.
+zarzamora|Zarzamora|Rubus ulmifolius|frutales|.8|.55|-15|38|out|full|soil|50|2.3|Muy vigorosa.
+frambuesa_amarilla|Frambuesa amarilla|Rubus idaeus|frutales|.95|.5|-15|32|out|full|universal|40|1.5|Riego constante en fructificación.
+grosella_negra|Grosella negra (casis)|Ribes nigrum|frutales|.9|.5|-25|30|out|part|universal|35|1.5|Prefiere frescor.
+uva_mesa|Uva de mesa|Vitis vinifera|frutales|.75|.45|-15|40|out|full|soil|50|2.3|Algo más de riego que la vid de vino.
+kiwi_arguta|Kiwiño (mini kiwi)|Actinidia arguta|frutales|1.0|.35|-25|34|out|full|soil|50|2.3|Necesita planta macho y hembra.
+olivo_arbequina|Olivo arbequina en maceta|Olea europaea 'Arbequina'|frutales|.65|.6|-8|42|out|full|universal|40|2.3|Más riego en maceta que en el campo.
+algarrobo|Algarrobo|Ceratonia siliqua|frutales|.5|.7|-5|45|out|full|soil|60|2.3|Extremadamente resistente a la sequía.
+platano_enano|Platanera enana|Musa acuminata 'Dwarf Cavendish'|frutales|1.1|.35|8|38|in|full|universal|45|2.3|Mucha agua y humedad.
+encina|Encina|Quercus ilex|arboles|.5|.7|-15|44|out|full|soil|80|2.3|Autóctona: solo riego de apoyo los primeros años.
+alcornoque|Alcornoque|Quercus suber|arboles|.5|.7|-10|44|out|full|acid|80|2.3|Prefiere suelos sin cal.
+roble|Roble|Quercus robur|arboles|.75|.55|-25|36|out|full|soil|80|2.3|Riego de apoyo en verano de joven.
+quejigo|Quejigo|Quercus faginea|arboles|.55|.65|-15|40|out|full|soil|80|2.3|Muy resistente.
+haya|Haya|Fagus sylvatica|arboles|.8|.45|-25|32|out|part|soil|80|2.3|No tolera la sequía prolongada.
+chopo|Chopo|Populus nigra|arboles|1.0|.5|-25|38|out|full|soil|80|2.3|Gran consumo de agua.
+alamo_blanco|Álamo blanco|Populus alba|arboles|1.0|.5|-25|40|out|full|soil|80|2.3|Raíces que buscan agua.
+sauce_lloron|Sauce llorón|Salix babylonica|arboles|1.1|.4|-25|38|out|full|soil|80|2.3|Necesita mucha agua.
+abedul|Abedul|Betula pendula|arboles|.85|.45|-30|32|out|full|soil|60|2.3|Riego en verano.
+fresno|Fresno|Fraxinus angustifolia|arboles|.85|.5|-20|38|out|full|soil|80|2.3|Le gusta el suelo fresco.
+platano_sombra|Plátano de sombra|Platanus × hispanica|arboles|.9|.5|-20|40|out|full|soil|80|2.3|Árbol urbano muy resistente.
+tilo|Tilo|Tilia platyphyllos|arboles|.85|.5|-25|35|out|full|soil|80|2.3|Riego en sequía.
+acacia|Acacia de tres espinas|Gleditsia triacanthos|arboles|.65|.6|-25|42|out|full|soil|80|2.3|Muy resistente a la sequía.
+robinia|Falsa acacia|Robinia pseudoacacia|arboles|.65|.6|-25|42|out|full|soil|80|2.3|Rústica.
+mimosa|Mimosa|Acacia dealbata|arboles|.6|.6|-8|40|out|full|soil|60|2.3|Florece en invierno.
+almez|Almez|Celtis australis|arboles|.6|.65|-15|42|out|full|soil|80|2.3|Árbol urbano resistente.
+morera|Morera|Morus alba|arboles|.75|.55|-20|42|out|full|soil|70|2.3|Sombra densa; tolera la sequía.
+moral|Moral|Morus nigra|frutales|.75|.55|-15|40|out|full|soil|70|2.3|Fruta muy sabrosa; mancha.
+catalpa|Catalpa|Catalpa bignonioides|arboles|.8|.5|-20|38|out|full|soil|70|2.3|Hojas grandes: riego en verano.
+ginkgo|Ginkgo|Ginkgo biloba|arboles|.7|.55|-25|38|out|full|soil|60|2.3|Muy resistente.
+arce_campestre|Arce campestre|Acer campestre|arboles|.75|.55|-25|36|out|full|soil|70|2.3|Rústico.
+arce_negundo|Arce negundo|Acer negundo|arboles|.85|.5|-25|38|out|full|soil|70|2.3|Crecimiento rápido.
+liquidambar|Liquidámbar|Liquidambar styraciflua|arboles|.85|.45|-20|36|out|full|acid|70|2.3|Color de otoño espectacular.
+cerezo_flor|Cerezo japonés de flor|Prunus serrulata|arboles|.8|.5|-20|34|out|full|soil|60|2.3|Riego regular en verano.
+ciruelo_rojo|Ciruelo de hoja roja|Prunus cerasifera 'Pissardii'|arboles|.75|.55|-20|38|out|full|soil|60|2.3|Ornamental resistente.
+arbol_amor|Árbol del amor|Cercis siliquastrum|arboles|.6|.65|-15|42|out|full|soil|60|2.3|Tolera la sequía.
+melia|Melia|Melia azedarach|arboles|.7|.6|-10|42|out|full|soil|60|2.3|Frutos tóxicos.
+tipuana|Tipuana|Tipuana tipu|arboles|.75|.55|-5|42|out|full|soil|70|2.3|Árbol de sombra.
+grevillea_arbol|Roble australiano|Grevillea robusta|arboles|.7|.6|-5|42|out|full|soil|60|2.3|Tolera la sequía.
+eucalipto|Eucalipto|Eucalyptus globulus|arboles|.9|.5|-6|42|out|full|soil|80|2.3|Gran consumo de agua.
+brachichito|Braquiquito|Brachychiton populneus|arboles|.55|.7|-6|45|out|full|soil|60|2.3|Muy resistente a la sequía.
+pino_pinonero|Pino piñonero|Pinus pinea|arboles|.5|.7|-12|44|out|full|soil|80|2.3|Autóctono; casi sin riego.
+pino_carrasco|Pino carrasco|Pinus halepensis|arboles|.45|.75|-10|45|out|full|soil|80|2.3|El pino más resistente a la sequía.
+pino_silvestre|Pino silvestre|Pinus sylvestris|arboles|.6|.6|-30|35|out|full|soil|80|2.3|De montaña.
+abeto|Abeto|Abies alba|arboles|.75|.45|-30|30|out|part|soil|60|2.3|No soporta el calor seco.
+abeto_navidad|Abeto de Navidad en maceta|Picea abies|arboles|.8|.4|-30|28|out|part|universal|35|1.5|Lejos de la calefacción; sustrato siempre húmedo.
+cedro|Cedro del Atlas|Cedrus atlantica|arboles|.55|.65|-20|40|out|full|soil|80|2.3|Resistente a la sequía.
+cedro_himalaya|Cedro del Himalaya|Cedrus deodara|arboles|.6|.6|-20|38|out|full|soil|80|2.3|Riego en sequía de joven.
+secuoya|Secuoya|Sequoia sempervirens|arboles|.9|.4|-15|32|out|full|soil|80|2.3|Necesita humedad.
+tejo|Tejo|Taxus baccata|arboles|.6|.55|-25|35|out|shade|soil|50|2.3|Muy tóxico.
+enebro|Enebro|Juniperus communis|arboles|.45|.7|-30|40|out|full|cactus|40|1.5|Muy resistente a la sequía.
+cipres_leyland|Ciprés de Leyland|Cupressus × leylandii|arboles|.75|.5|-20|38|out|full|soil|50|2.3|Seto de crecimiento rápido.
+araucaria|Araucaria|Araucaria heterophylla|interior|.7|.5|5|35|in|full|universal|30|2.3|Gira la maceta para que crezca recta.
+laurel_cerezo|Laurel cerezo|Prunus laurocerasus|arbustos|.75|.5|-20|36|out|part|soil|45|2.3|Seto denso.
+olmo|Olmo|Ulmus minor|arboles|.75|.55|-25|40|out|full|soil|80|2.3|Resistente.
+palmera_datilera|Palmera datilera|Phoenix dactylifera|arboles|.8|.5|-5|48|out|full|soil|60|2.3|Riego profundo en verano.
+palmera_abanico|Palmera excelsa|Trachycarpus fortunei|arboles|.65|.55|-15|40|out|full|universal|45|2.3|La palmera más resistente al frío.
+butia|Palmera de la jalea|Butia capitata|arboles|.6|.6|-10|42|out|full|soil|60|2.3|Rústica.
+yuca_rostrata|Yuca azul|Yucca rostrata|suculentas|.3|.85|-15|45|out|full|cactus|40|1.5|Casi sin riego.
+dasylirion|Dasilirion|Dasylirion wheeleri|suculentas|.3|.85|-12|45|out|full|cactus|40|1.5|Planta de jardín seco.
+aeonium|Aeonium|Aeonium arboreum|suculentas|.4|.75|0|35|out|full|cactus|16|1|Crece en invierno y reposa en verano.
+graptopetalum|Graptopetalum|Graptopetalum paraguayense|suculentas|.35|.8|-3|40|out|full|cactus|12|1|Muy fácil.
+pachyphytum|Pachyphytum|Pachyphytum oviferum|suculentas|.3|.85|3|38|in|full|cactus|10|1|Hojas que guardan mucha agua.
+cola_burro|Cola de burro|Sedum morganianum|suculentas|.35|.8|3|35|in|full|cactus|14|1|No la muevas: pierde las hojas.
+senecio|Senecio azul|Curio repens|suculentas|.35|.8|0|38|out|full|cactus|14|1|Poco riego.
+echinocactus|Asiento de suegra|Echinocactus grusonii|suculentas|.25|.9|3|45|out|full|cactus|16|1|Nada de agua en invierno.
+mammillaria|Mammillaria|Mammillaria elongata|suculentas|.25|.9|2|42|in|full|cactus|10|1|Muy poco riego.
+astrophytum|Astrophytum|Astrophytum myriostigma|suculentas|.25|.9|5|42|in|full|cactus|10|1|Sensible al exceso de agua.
+ferocactus|Ferocactus|Ferocactus latispinus|suculentas|.25|.9|3|45|out|full|cactus|16|1|Riego mínimo.
+cereus|Cereus (cactus columnar)|Cereus repandus|suculentas|.3|.85|3|45|in|full|cactus|20|1.5|Riega a fondo y deja secar.
+gymnocalycium|Gymnocalycium|Gymnocalycium mihanovichii|suculentas|.3|.85|5|40|in|part|cactus|8|1|Tolera algo menos de sol.
+corona_cristo|Corona de Cristo|Euphorbia milii|suculentas|.4|.75|8|42|in|full|cactus|16|1.5|Florece casi todo el año.
+rosa_desierto|Rosa del desierto|Adenium obesum|suculentas|.35|.8|10|45|in|full|cactus|16|1.5|Sin riego en invierno.
+portulacaria|Árbol de la abundancia|Portulacaria afra|suculentas|.4|.75|3|42|in|full|cactus|16|1.5|Ideal para bonsái.
+aloe_arborescens|Aloe arborescens|Aloe arborescens|suculentas|.35|.8|-3|42|out|full|cactus|30|1.5|Florece en invierno.
+aloe_aristata|Aloe aristata|Aristaloe aristata|suculentas|.35|.8|-8|38|out|full|cactus|12|1|Pequeño y resistente.
+gasteria|Gasteria|Gasteria carinata|suculentas|.35|.8|5|35|in|part|cactus|12|1|Tolera poca luz.
+agave_attenuata|Agave sin espinas|Agave attenuata|suculentas|.35|.8|2|40|out|full|cactus|35|1.5|Sensible a heladas.
+kalanchoe_tubiflora|Kalanchoe madre de miles|Kalanchoe delagoensis|suculentas|.35|.8|3|42|out|full|cactus|14|1|Muy invasora.
+crasula_ovata_gollum|Crassula Gollum|Crassula ovata 'Gollum'|suculentas|.35|.8|2|40|in|full|cactus|14|1|Como el árbol de jade.
+cactus_pascua|Cactus de Pascua|Hatiora gaertneri|interior|.55|.5|10|30|in|part|bark|14|1|Epífita: más agua que un cactus.
+rhipsalis|Rhipsalis|Rhipsalis baccifera|interior|.55|.5|10|30|in|part|bark|14|1.5|Cactus colgante de selva.
+epiphyllum|Epiphyllum|Epiphyllum oxypetalum|interior|.55|.5|10|32|in|part|bark|18|2.3|Flores nocturnas enormes.
+ficus_ginseng|Ficus ginseng|Ficus microcarpa|interior|.7|.5|12|32|in|full|universal|20|1.5|Deja secar la superficie.
+schefflera|Schefflera (árbol paraguas)|Schefflera arboricola|interior|.7|.55|10|32|in|full|universal|22|1.5|Resistente.
+calathea_orbifolia|Calathea orbifolia|Goeppertia orbifolia|interior|.95|.3|16|30|in|shade|peat|20|1.5|Agua sin cal y humedad alta.
+ctenanthe|Ctenanthe|Ctenanthe burle-marxii|interior|.9|.3|15|30|in|shade|peat|16|1.5|Como las calatheas.
+stromanthe|Stromanthe triostar|Stromanthe sanguinea|interior|.9|.3|15|30|in|part|peat|18|1.5|Hojas tricolor.
+fittonia|Fittonia|Fittonia albivenis|interior|1.0|.25|15|30|in|shade|peat|10|1|Se desmaya al secarse.
+hypoestes|Hypoestes|Hypoestes phyllostachya|interior|.9|.35|13|30|in|part|universal|12|1|Hojas moteadas.
+pilea_cadierei|Pilea aluminio|Pilea cadierei|interior|.8|.4|12|30|in|part|universal|12|1|Riego moderado.
+peperomia_sandia|Peperomia sandía|Peperomia argyreia|interior|.5|.65|13|30|in|part|cactus|12|1|Hojas carnosas.
+hoya_kerrii|Hoya corazón|Hoya kerrii|interior|.45|.75|12|32|in|full|cactus|12|1|Muy poco riego.
+beaucarnea|Pata de elefante|Beaucarnea recurvata|interior|.35|.8|5|42|in|full|cactus|25|1.5|Almacena agua en la base.
+dracaena_reflexa|Dracaena reflexa|Dracaena reflexa|interior|.6|.6|12|32|in|full|universal|22|1.5|Tolera olvidos.
+sansevieria_cyl|Sansevieria cilíndrica|Dracaena angolensis|interior|.3|.85|8|40|in|part|cactus|16|1|Riego muy escaso.
+aspidistra|Aspidistra|Aspidistra elatior|interior|.6|.6|-5|32|in|shade|universal|22|1.5|Casi indestructible.
+clivia|Clivia|Clivia miniata|interior|.6|.55|5|30|in|part|universal|22|1.5|Reposo seco en invierno para florecer.
+amarilis|Amarilis|Hippeastrum hybridum|interior|.6|.55|10|30|in|full|universal|16|1|Riego escaso hasta que salga la vara.
+anthurium_clarinervium|Anthurium clarinervium|Anthurium clarinervium|interior|.8|.45|16|30|in|part|bark|16|1.5|Sustrato muy aireado.
+philodendron_birkin|Philodendron Birkin|Philodendron 'Birkin'|interior|.8|.5|14|30|in|part|universal|15|1.5|Deja secar la mitad superior.
+philodendron_pink|Philodendron Pink Princess|Philodendron erubescens|interior|.8|.5|15|30|in|part|bark|16|1.5|Mucha luz indirecta.
+scindapsus|Scindapsus pictus|Scindapsus pictus|interior|.7|.55|14|30|in|part|universal|14|1.5|Hojas plateadas; tolera olvidos.
+ficus_tineke|Ficus tineke|Ficus elastica 'Tineke'|interior|.7|.55|12|32|in|full|universal|22|1.5|Como el gomero.
+alocasia_zebrina|Alocasia zebrina|Alocasia zebrina|interior|.85|.4|16|30|in|part|bark|20|1.5|Sensible al exceso de riego.
+colocasia|Colocasia (oreja de elefante)|Colocasia esculenta|interior|1.15|.25|12|32|out|part|peat|35|2.3|Le gusta el agua abundante.
+caladio|Caladio|Caladium bicolor|interior|.85|.35|16|32|in|part|peat|16|1.5|Reposo en invierno.
+cissus|Cissus|Cissus rhombifolia|interior|.75|.5|8|30|in|part|universal|16|1.5|Trepadora de interior.
+oxalis_triangularis|Trébol púrpura|Oxalis triangularis|interior|.75|.45|5|30|in|full|universal|14|1|Puede entrar en reposo: deja de regar.
+begonia_rex|Begonia rex|Begonia rex-cultorum|interior|.8|.4|14|30|in|part|peat|14|1.5|No mojes las hojas.
+begonia_maculata|Begonia maculata|Begonia maculata|interior|.8|.4|15|30|in|part|universal|16|1.5|Hojas con lunares.
+gloxinia|Gloxinia|Sinningia speciosa|interior|.8|.4|16|30|in|part|peat|14|1|Riego por el plato.
+helecho_cuerno|Helecho cuerno de alce|Platycerium bifurcatum|interior|.6|.5|10|30|in|part|bark|20|1.5|Sumerge la base una vez por semana.
+pteris|Pteris|Pteris cretica|interior|.95|.3|10|28|in|shade|peat|14|1|Siempre algo húmedo.
+nephrolepis_duffii|Helecho limón|Nephrolepis cordifolia 'Duffii'|interior|.95|.3|10|30|in|shade|peat|16|1.5|Pulveriza a menudo.
+kokedama|Kokedama|Varias|interior|.7|.4|10|30|in|part|peat|12|1|Riega sumergiendo la bola 10 minutos.
+terrario|Terrario cerrado|Varias|interior|.2|.5|12|30|in|part|peat|20|1|Casi no necesita riego: solo si no hay condensación.
+anthurium_blanco|Anturio blanco|Anthurium andraeanum|interior|.8|.45|15|30|in|part|bark|16|1.5|Agua templada sin cal.
+guzmania|Guzmania|Guzmania lingulata|interior|.5|.6|14|32|in|part|bark|14|1|Agua en la roseta.
+vriesea|Vriesea|Vriesea splendens|interior|.5|.6|14|32|in|part|bark|14|1|Como la guzmania.
+ave_paraiso_blanca|Ave del paraíso gigante|Strelitzia nicolai|interior|.8|.5|5|35|in|full|universal|35|2.3|Hojas enormes.
+monstera_variegata|Monstera variegata|Monstera deliciosa 'Albo Variegata'|interior|.75|.5|14|30|in|part|bark|25|2.3|Más delicada que la normal.
+ficus_audrey|Ficus audrey|Ficus benghalensis|interior|.75|.5|12|32|in|full|universal|25|2.3|Más fácil que el lyrata.
+pachira|Pachira (árbol del dinero)|Pachira aquatica|interior|.7|.55|12|32|in|full|universal|22|1.5|Poco riego en invierno.
+croton_mammy|Crotón Mammy|Codiaeum variegatum 'Mammy'|interior|.85|.4|15|32|in|full|universal|16|1.5|Mucha luz.
+calathea_lancifolia|Calathea serpiente|Goeppertia insignis|interior|.95|.3|16|30|in|shade|peat|16|1.5|Agua sin cal.
+ruscus|Rusco|Ruscus aculeatus|arbustos|.5|.65|-15|38|out|shade|universal|25|1|Tolera sombra y sequía.
+peonia|Peonía|Paeonia lactiflora|flores|.8|.45|-25|32|out|full|soil|40|1.5|Necesita frío invernal.
+hemerocallis|Hemerocallis|Hemerocallis fulva|flores|.7|.5|-25|38|out|full|soil|30|1.5|Muy resistente.
+lilium|Azucena (lilium)|Lilium candidum|flores|.75|.5|-20|32|out|full|universal|20|1|Bulbo: no encharcar.
+cala|Cala|Zantedeschia aethiopica|flores|1.05|.3|-3|30|out|part|universal|25|1.5|Le gusta el agua; reposo en verano.
+ranunculo|Ranúnculo|Ranunculus asiaticus|flores|.8|.4|-5|26|out|full|universal|16|1|Flor de primavera.
+fresia|Fresia|Freesia refracta|flores|.75|.45|0|28|out|full|universal|16|1|Muy perfumada.
+gladiolo|Gladiolo|Gladiolus × hortulanus|flores|.8|.5|0|34|out|full|soil|25|1|Riego regular hasta la floración.
+crocus|Azafrán de primavera|Crocus vernus|flores|.65|.5|-25|28|out|full|universal|12|1|Bulbo pequeño.
+azafran|Azafrán|Crocus sativus|flores|.55|.6|-15|35|out|full|soil|20|1|Sin riego en verano.
+muscari|Muscari|Muscari armeniacum|flores|.65|.5|-25|30|out|full|universal|12|1|Muy fácil.
+alstroemeria|Alstroemeria|Alstroemeria aurea|flores|.8|.45|-5|30|out|full|universal|22|1.5|Riego regular.
+osteospermum|Dimorfoteca|Osteospermum ecklonis|flores|.6|.6|-3|38|out|full|universal|20|1.5|Tolera la sequía.
+bidens|Bidens|Bidens ferulifolia|flores|.8|.45|0|35|out|full|universal|20|1.5|Floración abundante.
+calibrachoa|Calibrachoa (million bells)|Calibrachoa hybrida|flores|.95|.35|2|35|out|full|acid|20|1.5|Como una petunia pequeña.
+nemesia|Nemesia|Nemesia strumosa|flores|.8|.45|-3|30|out|full|universal|16|1|Flor de primavera.
+alyssum|Alyssum|Lobularia maritima|flores|.7|.5|-5|35|out|full|universal|14|1|Tapizante perfumado.
+cineraria|Cineraria|Pericallis × hybrida|flores|.85|.35|3|25|out|part|universal|16|1|Se marchita rápido si se seca.
+brezo|Brezo|Calluna vulgaris|flores|.75|.4|-20|30|out|full|acid|18|1|Sustrato ácido.
+salvia_ornamental|Salvia ornamental|Salvia nemorosa|flores|.6|.6|-20|38|out|full|universal|20|1.5|Resistente a la sequía.
+echinacea|Equinácea|Echinacea purpurea|flores|.65|.55|-25|38|out|full|soil|25|1.5|Tolera la sequía.
+rudbeckia|Rudbeckia|Rudbeckia hirta|flores|.7|.55|-20|38|out|full|soil|25|1.5|Floración en verano.
+gaura|Gaura|Gaura lindheimeri|flores|.55|.65|-15|40|out|full|universal|25|1.5|Muy resistente.
+achillea|Milenrama|Achillea millefolium|flores|.5|.7|-25|38|out|full|universal|20|1|Poco riego.
+coreopsis|Coreopsis|Coreopsis grandiflora|flores|.6|.6|-20|38|out|full|universal|20|1|Tolera la sequía.
+gaillardia|Gaillardia|Gaillardia × grandiflora|flores|.55|.65|-15|40|out|full|universal|20|1|Muy resistente.
+delphinium|Espuela de caballero|Delphinium elatum|flores|.85|.4|-20|30|out|full|soil|30|1.5|Necesita tutor.
+digitalis|Dedalera|Digitalis purpurea|flores|.8|.45|-20|30|out|part|universal|25|1.5|Tóxica.
+aguilena|Aguileña|Aquilegia vulgaris|flores|.75|.45|-25|30|out|part|universal|20|1|De semisombra.
+hosta|Hosta|Hosta plantaginea|flores|.85|.4|-25|30|out|shade|soil|30|1.5|Hojas grandes de sombra.
+astilbe|Astilbe|Astilbe × arendsii|flores|1.0|.3|-25|30|out|shade|soil|25|1.5|Necesita humedad constante.
+heuchera|Heuchera|Heuchera micrantha|flores|.75|.45|-25|32|out|part|universal|20|1|Hojas de colores.
+coleo|Coleo|Coleus scutellarioides|flores|.9|.35|10|32|out|part|universal|18|1.5|Hojas de colores; sensible al frío.
+begonia_semp|Begonia de flor|Begonia semperflorens|flores|.8|.45|5|32|out|part|universal|14|1|Para macetas de sombra.
+alegria_guinea|Alegría de Guinea|Impatiens hawkeri|flores|.95|.3|8|32|out|part|universal|18|1.5|Aguanta algo más de sol.
+amaranto|Amaranto|Amaranthus caudatus|flores|.8|.55|5|38|out|full|soil|30|1.5|Planta grande de verano.
+guisante_olor|Guisante de olor|Lathyrus odoratus|flores|.9|.4|-5|28|out|full|soil|25|1.5|Trepadora muy perfumada.
+malva|Malva|Malva sylvestris|flores|.65|.6|-15|38|out|full|soil|25|1.5|Rústica.
+malvarrosa|Malvarrosa|Alcea rosea|flores|.7|.55|-20|38|out|full|soil|35|2.3|Muy alta; necesita tutor.
+siempreviva_flor|Siempreviva (flor seca)|Xerochrysum bracteatum|flores|.6|.6|-3|38|out|full|universal|18|1|Poco riego.
+statice|Limonium (statice)|Limonium sinuatum|flores|.55|.65|-5|38|out|full|universal|18|1|Tolera la sal.
+aster|Áster|Symphyotrichum novi-belgii|flores|.75|.5|-25|34|out|full|universal|22|1.5|Floración de otoño.
+gerbera_jardin|Gerbera de jardín|Gerbera jamesonii|flores|.8|.45|0|32|out|full|universal|20|1|Riega al pie.
+dalia_enana|Dalia enana|Dahlia pinnata|flores|.9|.4|5|34|out|full|universal|20|1.5|Ideal en maceta.
+nenufar|Nenúfar|Nymphaea alba|flores|1.2|.05|-10|35|out|full|soil|50|1|Planta acuática: solo mantén el nivel de agua.
+papiro|Papiro|Cyperus papyrus|flores|1.2|.1|5|38|out|full|peat|30|2.3|Con el pie siempre en agua.
+lavatera|Lavatera|Lavatera maritima|arbustos|.6|.6|-8|40|out|full|universal|35|2.3|Floración larga.
+viburno|Durillo|Viburnum tinus|arbustos|.65|.55|-15|38|out|part|soil|45|2.3|Florece en invierno.
+viburno_bola|Bola de nieve|Viburnum opulus 'Roseum'|arbustos|.8|.45|-25|34|out|part|soil|45|2.3|Riego regular en verano.
+hibisco_syriacus|Rosa de Siria|Hibiscus syriacus|arbustos|.75|.5|-20|40|out|full|soil|45|2.3|Floración en verano.
+rosal_trepador|Rosal trepador|Rosa 'Climbing'|trepadoras|.85|.45|-15|36|out|full|soil|45|2.3|Riega al pie, por la mañana.
+rosal_paisaje|Rosal tapizante|Rosa 'Flower Carpet'|flores|.75|.5|-15|38|out|full|universal|30|1.5|Muy resistente.
+celinda|Celinda|Philadelphus coronarius|arbustos|.75|.5|-25|35|out|full|soil|45|2.3|Muy perfumada.
+spirea|Spiraea|Spiraea × vanhouttei|arbustos|.75|.5|-25|35|out|full|soil|40|2.3|Rústica.
+weigela|Weigela|Weigela florida|arbustos|.8|.45|-25|34|out|part|soil|40|2.3|Riego regular en verano.
+budleja|Arbusto de las mariposas|Buddleja davidii|arbustos|.6|.6|-20|40|out|full|soil|45|2.3|Atrae mariposas.
+ceanothus|Ceanothus|Ceanothus thyrsiflorus|arbustos|.5|.7|-10|40|out|full|universal|40|2.3|No riegues en verano una vez establecido.
+cotoneaster|Cotoneaster|Cotoneaster horizontalis|arbustos|.55|.65|-25|38|out|full|universal|35|1.5|Muy resistente.
+piracanta|Espino de fuego|Pyracantha coccinea|arbustos|.6|.6|-20|40|out|full|soil|40|2.3|Bayas rojas en otoño.
+nandina|Nandina|Nandina domestica|arbustos|.65|.55|-15|38|out|part|universal|30|1.5|Color rojo en invierno.
+berberis|Agracejo|Berberis thunbergii|arbustos|.6|.6|-25|38|out|full|universal|30|1.5|Rústico.
+escalonia|Escalonia|Escallonia rubra|arbustos|.7|.5|-10|36|out|full|universal|40|2.3|Buen seto costero.
+lentisco|Lentisco|Pistacia lentiscus|arbustos|.45|.75|-8|45|out|full|soil|40|2.3|Autóctono; muy resistente.
+mirto|Mirto|Myrtus communis|arbustos|.55|.65|-8|42|out|full|universal|35|1.5|Resistente a la sequía.
+retama|Retama|Retama sphaerocarpa|arbustos|.35|.85|-10|45|out|full|soil|40|2.3|Casi sin riego.
+jara|Jara pringosa|Cistus ladanifer|arbustos|.4|.8|-10|44|out|full|acid|35|1.5|Autóctona; odia el exceso de agua.
+aligustre|Aligustre|Ligustrum vulgare|arbustos|.7|.55|-20|38|out|full|soil|45|2.3|Seto clásico.
+callistemon|Limpiatubos|Callistemon citrinus|arbustos|.7|.55|-5|42|out|full|universal|40|2.3|Flores rojas en cepillo.
+grevillea|Grevillea|Grevillea juniperina|arbustos|.55|.65|-8|40|out|full|acid|35|1.5|No abones con fósforo.
+protea|Protea|Protea cynaroides|arbustos|.5|.65|-2|38|out|full|acid|35|1.5|Sustrato ácido y muy drenante.
+leucadendron|Leucadendron|Leucadendron salignum|arbustos|.5|.65|-3|38|out|full|acid|35|1.5|Como las proteas.
+plumbago|Celestina|Plumbago auriculata|arbustos|.7|.5|-3|40|out|full|universal|35|2.3|Floración azul todo el verano.
+tecomaria|Bignonia del Cabo|Tecomaria capensis|arbustos|.65|.55|-3|42|out|full|universal|40|2.3|Tolera la sequía.
+jazmin_invierno|Jazmín de invierno|Jasminum nudiflorum|arbustos|.6|.6|-20|36|out|full|universal|35|1.5|Flores amarillas en invierno.
+romero_blanco|Romero de flor blanca|Salvia rosmarinus 'Albus'|aromaticas|.5|.7|-8|40|out|full|cactus|25|1.5|Como el romero común.
+teucrium|Olivilla|Teucrium fruticans|arbustos|.45|.75|-8|42|out|full|universal|40|2.3|Seto plateado de jardín seco.
+lavandin|Lavandín|Lavandula × intermedia|arbustos|.5|.7|-15|40|out|full|cactus|30|1.5|Más grande que la lavanda.
+cineraria_maritima|Cineraria marítima|Jacobaea maritima|arbustos|.5|.7|-5|40|out|full|universal|20|1|Hojas plateadas.
+hortensia_paniculata|Hortensia paniculata|Hydrangea paniculata|arbustos|.95|.4|-30|34|out|full|soil|45|2.3|Aguanta más sol que la hortensia común.
+gardenia_arbol|Gardenia en árbol|Gardenia jasminoides|arbustos|.85|.35|-3|32|out|part|acid|35|1.5|Agua sin cal.
+azalea_japonesa|Azalea japonesa|Rhododendron obtusum|arbustos|.8|.35|-15|30|out|part|acid|30|1.5|Sustrato ácido.
+rododendro|Rododendro|Rhododendron ponticum|arbustos|.85|.35|-20|30|out|part|acid|45|2.3|Suelo ácido y fresco.
+bignonia|Bignonia rosa|Podranea ricasoliana|trepadoras|.7|.55|-3|40|out|full|universal|40|2.3|Trepadora vigorosa.
+parra_virgen|Parra virgen|Parthenocissus tricuspidata|trepadoras|.75|.5|-25|38|out|part|soil|40|2.3|Rojo en otoño.
+solanum_jasminoides|Falso jazmín blanco|Solanum laxum|trepadoras|.7|.55|-5|38|out|full|universal|35|2.3|Floración larga.
+ipomea|Campanilla (ipomea)|Ipomoea purpurea|trepadoras|.8|.5|5|38|out|full|universal|25|1.5|Anual de crecimiento rápido.
+thunbergia|Susana de ojos negros|Thunbergia alata|trepadoras|.85|.45|8|35|out|full|universal|25|1.5|Trepadora anual.
+campsis|Bignonia trompeta|Campsis radicans|trepadoras|.7|.55|-20|40|out|full|soil|45|2.3|Muy vigorosa.
+hiedra_variegata|Hiedra variegada|Hedera helix 'Variegata'|trepadoras|.7|.5|-10|35|out|part|universal|25|1.5|Necesita algo más de luz.
+lupulo|Lúpulo|Humulus lupulus|trepadoras|.9|.45|-25|34|out|full|soil|50|2.3|Muy exigente en agua en verano.
+chayote|Chayote|Sechium edule|huerto|1.0|.4|5|35|out|full|soil|50|2.3|Trepadora vigorosa.
+cesped_sombra|Césped de sombra|Festuca rubra|cesped|.8|.5|-20|32|out|shade|soil|0|1|Riega poco y profundo.
+zoysia|Zoysia|Zoysia japonica|cesped|.7|.6|-10|42|out|full|soil|0|1|Muy resistente al calor.
+kikuyo|Kikuyo|Cenchrus clandestinus|cesped|.75|.55|-5|42|out|full|soil|0|1|Muy agresivo.
+gramon|Grama de San Agustín|Stenotaphrum secundatum|cesped|.8|.55|-5|42|out|full|soil|0|1|Tolera sombra parcial.
+tomillo_rastrero|Tomillo rastrero|Thymus serpyllum|cesped|.45|.7|-20|38|out|full|cactus|0|1|Alternativa al césped que casi no necesita agua.
+lippia|Lippia|Phyla nodiflora|cesped|.55|.65|-8|42|out|full|soil|0|1|Tapizante que ahorra mucha agua.
+trebol|Césped de trébol|Trifolium repens|cesped|.85|.5|-20|34|out|full|soil|0|1|No necesita abono.
+bonsai_olivo|Bonsái de olivo|Olea europaea|bonsai|.65|.4|-5|42|out|full|bark|25|2.3|Tolera algo de sequía, pero en maceta pequeña se seca rápido.
+bonsai_pino|Bonsái de pino negro|Pinus thunbergii|bonsai|.55|.45|-20|38|out|full|bark|25|2.3|Riega cuando el sustrato se seque en superficie.
+bonsai_azalea|Bonsái de azalea|Rhododendron indicum|bonsai|.8|.3|-10|32|out|part|acid|22|2.3|Agua sin cal y sustrato kanuma.
+bonsai_granado|Bonsái de granado|Punica granatum 'Nana'|bonsai|.65|.4|-8|42|out|full|bark|22|2.3|Mucho sol.
+bonsai_sageretia|Bonsái de sageretia|Sageretia theezans|bonsai|.8|.3|5|35|in|full|bark|20|2.3|No dejes que se seque.
+bonsai_zelkova|Bonsái de zelkova|Zelkova serrata|bonsai|.8|.35|-20|36|out|part|bark|22|2.3|Exterior todo el año.
+bonsai_portulacaria|Bonsái de portulacaria|Portulacaria afra|bonsai|.4|.7|3|42|in|full|cactus|20|2.3|Suculenta: poco riego.
+orquidea_miltonia|Orquídea miltonia|Miltoniopsis spp.|orquideas|.6|.4|12|28|in|part|bark|12|1|No dejes secar del todo.
+orquidea_cattleya|Orquídea cattleya|Cattleya labiata|orquideas|.5|.6|12|32|in|full|bark|14|1|Deja secar entre riegos.
+orquidea_paphio|Orquídea zapatito|Paphiopedilum spp.|orquideas|.6|.4|14|30|in|shade|bark|12|1|Sustrato siempre algo húmedo.
+orquidea_zygo|Orquídea zygopetalum|Zygopetalum mackayi|orquideas|.6|.45|10|30|in|part|bark|14|1|Perfumada.
+orquidea_cambria|Orquídea cambria|Oncidium 'Cambria'|orquideas|.55|.5|12|30|in|part|bark|12|1|Riega cuando el sustrato esté casi seco.
+orquidea_jardin|Orquídea de jardín (bletilla)|Bletilla striata|orquideas|.7|.45|-10|32|out|part|universal|16|1|Terrestre y resistente.
+pinguicula|Pinguicula|Pinguicula moranensis|carnivoras|.9|.25|5|32|in|full|peat|10|1|Agua destilada; menos en invierno.
+cephalotus|Cephalotus|Cephalotus follicularis|carnivoras|.9|.25|0|32|in|full|peat|10|1|Riego por el plato con agua destilada.
+utricularia|Utricularia|Utricularia sandersonii|carnivoras|1.1|.1|5|32|in|part|peat|8|1|Sustrato siempre empapado.
+darlingtonia|Planta cobra|Darlingtonia californica|carnivoras|1.0|.15|-10|28|out|part|peat|14|1|Raíces frescas con agua de lluvia.
