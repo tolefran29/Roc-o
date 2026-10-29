@@ -1,0 +1,94 @@
+name: Publicar Rocío
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: publicar
+  cancel-in-progress: true
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node build.mjs
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4
+
+  android:
+    runs-on: ubuntu-latest
+    env:
+      KEYSTORE_BASE64: ${{ secrets.ROCIO_KEYSTORE_BASE64 }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Comprobar clave de firma
+        id: key
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::warning::Sin clave de firma: se publica solo la web."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.key.outputs.ok == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - if: steps.key.outputs.ok == 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - if: steps.key.outputs.ok == 'true'
+        uses: android-actions/setup-android@v3
+      - if: steps.key.outputs.ok == 'true'
+        name: Preparar Android
+        run: |
+          npm ci
+          node build.mjs
+          npx cap add android
+          node scripts/prepare-android.mjs
+          npx cap sync android
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/rocio.jks"
+      - if: steps.key.outputs.ok == 'true'
+        name: Compilar APK
+        working-directory: android
+        env:
+          ROCIO_KEYSTORE_FILE: ${{ runner.temp }}/rocio.jks
+          ROCIO_KEYSTORE_PASSWORD: ${{ secrets.ROCIO_KEYSTORE_PASSWORD }}
+          ROCIO_KEY_ALIAS: ${{ secrets.ROCIO_KEY_ALIAS }}
+          ROCIO_KEY_PASSWORD: ${{ secrets.ROCIO_KEY_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          VN=$(node -p "require('../package.json').version")
+          ./gradlew --no-daemon assembleRelease -PversionCode=${{ github.run_number }} -PversionName="$VN"
+          cp app/build/outputs/apk/release/app-release.apk ../rocio.apk
+      - if: steps.key.outputs.ok == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.run_number }}
+          name: Rocío (versión ${{ github.run_number }})
+          body: Descarga rocio.apk en tu móvil Android y ábrelo para instalarlo.
+          make_latest: true
+          files: rocio.apk
