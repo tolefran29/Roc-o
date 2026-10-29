@@ -731,7 +731,23 @@ function balanceChart(today) {
 }
 
 /* ================== IA ================== */
-let SAMPLE = null, aiBusy = false, AI_MODE = CONFIG.aiEndpoint ? "proxy" : null;
+let SAMPLE = null, aiBusy = false, AI_MODE = CONFIG.aiEndpoint ? "proxy" : (IN_CLAUDE ? null : "link");
+const AI_FULL = () => AI_MODE === "proxy" || AI_MODE === "claude";
+/* Modo «puente»: sin clave de IA propia, las preguntas se abren en Claude con el contexto ya escrito */
+function linkContext() {
+  const today = isoDate(new Date());
+  const pl = S.plants.slice(0, 12).map(p => { const s = simulate(p); return `- ${p.name} (${spec(p).n}; ${{ in: "interior", out: "exterior", cov: "exterior cubierto" }[p.place]}, ${p.cont === "pot" ? "maceta " + p.diam + " cm" : "en suelo"}): agua útil ${Math.round(s.moist * 100)} %, último riego ${niceDay(p.last.slice(0, 10), today)}, próximo ${niceDay(s.due, today)}`; }).join("\n");
+  const wx = []; for (let k = 0; k < 5; k++) { const d = addDays(today, k), w = wxDay(d); if (w) wx.push(`${new Date(d + "T12:00:00").getDate()}/${new Date(d + "T12:00:00").getMonth() + 1}: ${Math.round(w.tmin)}–${Math.round(w.tmax)} °C, lluvia ${w.precip != null ? nf1.format(w.precip) + " mm" : (w.prob != null ? Math.round(w.prob) + " %" : "?")}`); }
+  return `Contexto (app de riego Rocío). Hoy: ${today}. Ubicación: ${S.loc ? S.loc.name + (S.loc.region ? ", " + S.loc.region : "") : "?"}.\nMis plantas:\n${pl || "(ninguna aún)"}\nTiempo próximos días: ${wx.join("; ") || "sin datos"}.`;
+}
+function openClaude(question, withContext = true) {
+  let q = (withContext ? "Eres una experta en botánica y riego. Responde en español de España, breve y práctico.\n\n" + linkContext() + "\n\n" : "") + question;
+  if (q.length > 2400) q = q.slice(0, 2400);
+  try { navigator.clipboard && navigator.clipboard.writeText(q).catch(() => { }); } catch (e) { }
+  const url = "https://claude.ai/new?q=" + encodeURIComponent(q);
+  haptic(); toast("Abriendo Claude… La pregunta también queda copiada por si hay que pegarla");
+  setTimeout(() => { if (IS_NATIVE) location.href = url; else { const w = window.open(url, "_blank"); if (w) { try { w.opener = null; } catch (e) { } } else location.href = url; } }, 350);
+}
 async function getSample() { if (SAMPLE) return SAMPLE; SAMPLE = await claudeUse("sample"); if (SAMPLE) AI_MODE = "claude"; return SAMPLE; }
 async function blobB64(b) { const u = new Uint8Array(await b.arrayBuffer()); let s = ""; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); }
 async function proxyCall(messages, images) {
@@ -778,6 +794,7 @@ async function aiStream(prompt, outEl, opts = {}) {
   } catch (e) { outEl.innerHTML = `<p>${aiErr(e)}</p>`; return null; }
 }
 async function aiInsight() {
+  if (AI_MODE === "link") { openClaude("Revisa mi jardín y dame un parte breve para esta semana: qué regar y cuándo, riesgos por el tiempo (heladas, calor, viento, lluvia) y un consejo para cada planta que lo necesite."); return; }
   const out = $("#insightOut"); if (!out || aiBusy) return; aiBusy = true;
   out.innerHTML = `<div class="ai-out" style="margin-top:10px"></div>`;
   await aiStream(AI_SYS + "\n\n" + gardenContext() + "\n\nTAREA: Revisa el jardín y da un parte breve para esta semana: 1) qué regar y cuándo (coherente con las fechas calculadas), 2) riesgos por el tiempo (heladas, calor, viento, lluvia) y qué hacer, 3) un consejo de cuidado específico por planta que lo necesite. Máximo 180 palabras.", out.firstChild);
@@ -806,6 +823,16 @@ async function aiCustom(text) {
 /* Chat */
 function renderAI() {
   const el = $("#paneAI");
+  if (AI_MODE === "link") {
+    el.innerHTML = `<div class="sec-h" style="margin-top:8px"><h2>Pregunta a la IA</h2></div>
+      <div class="card ai-note">${svg("sparkle")}<div>Tus preguntas se abren en <b>Claude</b> (gratis con una cuenta), con tus plantas, su riego y el tiempo ya incluidos. Solo tienes que enviarlas.</div></div>
+      <form class="composer" id="composer" style="position:static;margin-top:14px"><textarea id="chatIn" rows="2" placeholder="Escribe tu pregunta sobre tus plantas…" aria-label="Pregunta"></textarea><button class="icon-btn water" type="submit" aria-label="Preguntar">${svg("send")}</button></form>
+      <div class="suggest" style="margin-top:12px">${["¿Qué riego este fin de semana?", "¿Cuándo siembro los tomates?", "¿Puedo dejar las plantas una semana sin regar?", "¿Qué plantas sufren con el frío de estos días?"].map(q => `<button class="chip" data-act="ask" data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div>
+      <div class="ai-actions" style="margin-top:18px"><button class="ai-tile" data-act="diagnose">${svg("stethoscope")}<b>Diagnosticar</b><span>Hojas amarillas, manchas, plagas… con foto en Claude.</span></button><button class="ai-tile" data-act="identify">${svg("camera")}<b>Identificar planta</b><span>Adjunta una foto y te dice qué es y cómo regarla.</span></button></div>
+      <button class="card ai-tile" style="width:100%;margin-top:10px" data-act="insight">${svg("leaf")}<b>Revisar mi jardín</b><span>Consejos para esta semana según el tiempo.</span></button>`;
+    $("#composer").onsubmit = e => { e.preventDefault(); const v = $("#chatIn").value.trim(); if (v) { ask(v); $("#chatIn").value = ""; } };
+    return;
+  }
   let h = `<div class="sec-h" style="margin-top:8px"><h2>Rocío IA</h2><span class="aside">tu botánica de bolsillo</span></div>
     <div class="ai-actions"><button class="ai-tile" data-act="identify">${svg("camera")}<b>Identificar planta</b><span>Haz una foto y la añado con sus parámetros de riego.</span></button>
     <button class="ai-tile" data-act="diagnose">${svg("stethoscope")}<b>Diagnosticar</b><span>Hojas amarillas, manchas, plagas… con foto o descripción.</span></button></div>
@@ -819,6 +846,7 @@ function renderAI() {
   $("#chatIn").addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("#composer").requestSubmit(); } });
 }
 async function ask(q) {
+  if (AI_MODE === "link") { openClaude("Mi pregunta: " + q); return; }
   if (aiBusy) return; aiBusy = true;
   S.chat.push({ role: "user", content: q }); renderAI();
   const box = $("#chat"); const a = document.createElement("div"); a.className = "msg a"; box.appendChild(a); a.scrollIntoView({ block: "end" });
@@ -879,7 +907,7 @@ let catFilter = "all", catQ = "";
 function openAdd() {
   const cats = ["all", ...Object.keys(CAT_LABEL).filter(c => CATALOG.some(x => x.cat === c))];
   openSheet(sheetHead("Añadir planta") + `
-    ${AI_MODE ? "" : "<!--"}<div class="ai-actions" style="margin-bottom:14px"><button class="ai-tile" data-act="identify">${svg("camera")}<b>Con una foto</b><span>La IA reconoce la especie.</span></button><button class="ai-tile" data-act="customAI">${svg("wand")}<b>Por su nombre</b><span>Cualquier planta del mundo, la IA la configura.</span></button></div>${AI_MODE ? "" : "-->"}
+    ${AI_FULL() ? "" : "<!--"}<div class="ai-actions" style="margin-bottom:14px"><button class="ai-tile" data-act="identify">${svg("camera")}<b>Con una foto</b><span>La IA reconoce la especie.</span></button><button class="ai-tile" data-act="customAI">${svg("wand")}<b>Por su nombre</b><span>Cualquier planta del mundo, la IA la configura.</span></button></div>${AI_FULL() ? "" : "-->"}
     <div class="search">${svg("search")}<input class="input" id="catQ" placeholder="Buscar entre ${CATALOG.length} especies" autocomplete="off" value="${esc(catQ)}"></div>
     <div class="chips" style="margin-top:10px">${cats.map(c => `<button class="chip${c === catFilter ? " on" : ""}" data-act="catF" data-c="${c}">${c === "all" ? "Todas" : CAT_LABEL[c]}</button>`).join("")}</div>
     <div class="cat-list" id="catList"></div>`, sh => { const i = $("#catQ", sh); i.oninput = () => { catQ = i.value; drawCat(); }; drawCat(); });
@@ -888,7 +916,7 @@ function drawCat() {
   const q = norm(catQ); const L = CATALOG.filter(c => (catFilter === "all" || c.cat === catFilter) && (!q || norm(c.n + " " + c.sci).includes(q)));
   const el = $("#catList"); if (!el) return;
   el.innerHTML = L.slice(0, 120).map(c => `<button class="cat-item" data-act="pick" data-t="${c.id}"><div class="av" style="color:${CAT_TINT[c.cat]};background:color-mix(in srgb, ${CAT_TINT[c.cat]} 14%, var(--surface))">${glyph(c.cat)}</div><div style="min-width:0"><b>${esc(c.n)}</b><i>${esc(c.sci)}</i></div><div class="tag">${CAT_LABEL[c.cat]}<br>${c.place === "in" ? "interior" : "exterior"}</div></button>`).join("") +
-    (L.length ? "" : !AI_MODE ? `<div class="empty"><div>No está en el catálogo. Elige «Otra planta» en la categoría más parecida y ajusta su maceta.</div></div>` : `<div class="empty"><div>No está en el catálogo.</div><button class="btn primary" data-act="customAI" data-q="${esc(catQ)}">${svg("wand")} Configurar «${esc(catQ)}» con IA</button></div>`);
+    (L.length ? "" : !AI_FULL() ? `<div class="empty"><div>No está en el catálogo. Elige «Otra planta» en la categoría más parecida y ajusta su maceta.</div></div>` : `<div class="empty"><div>No está en el catálogo.</div><button class="btn primary" data-act="customAI" data-q="${esc(catQ)}">${svg("wand")} Configurar «${esc(catQ)}» con IA</button></div>`);
 }
 /* Formulario */
 function openForm(p, isNew) {
@@ -961,7 +989,7 @@ function openLoc() {
 }
 async function geocode(q) {
   try { const j = await fetchJSON("https://geocoding-api.open-meteo.com/v1/search?count=6&language=es&format=json&name=" + encodeURIComponent(q), 5000); if (j.results && j.results.length) return j.results.map(x => ({ name: x.name, region: [x.admin2, x.admin1, x.country].filter(Boolean).join(", "), lat: +x.latitude.toFixed(4), lon: +x.longitude.toFixed(4) })); } catch (e) { }
-  try { if (AI_MODE || await getSample()) { const r = await aiJSON('Devuelve SOLO JSON {"results":[{"name":"","region":"provincia, comunidad, país","lat":0,"lon":0}]} con hasta 4 localidades reales que coincidan con «' + q + '», priorizando España. Coordenadas con 4 decimales.', { modelTier: "quick" }); if (r && Array.isArray(r.results)) return r.results.filter(x => isFinite(x.lat) && isFinite(x.lon)); } } catch (e) { }
+  try { if (AI_MODE === "proxy" || await getSample()) { const r = await aiJSON('Devuelve SOLO JSON {"results":[{"name":"","region":"provincia, comunidad, país","lat":0,"lon":0}]} con hasta 4 localidades reales que coincidan con «' + q + '», priorizando España. Coordenadas con 4 decimales.', { modelTier: "quick" }); if (r && Array.isArray(r.results)) return r.results.filter(x => isFinite(x.lat) && isFinite(x.lon)); } } catch (e) { }
   return [];
 }
 
@@ -977,6 +1005,7 @@ function photoPicker(title, intro, withPlant, onGo) {
   });
 }
 function startIdentify() {
+  if (AI_MODE === "link") { openSheet(sheetHead("Identificar una planta") + `<ol class="steps"><li><b class="n"></b><div><div>Pulsa <b>Abrir Claude</b></div><span>Se abre un chat con la pregunta ya escrita.</span></div></li><li><b class="n"></b><div><div>Pulsa <b>+</b> y adjunta la foto de la planta</div></div></li><li><b class="n"></b><div><div>Envía. Luego búscala aquí en <b>Añadir</b></div><span>Claude te dirá qué especie elegir del catálogo.</span></div></li></ol><button class="btn primary block lg" style="margin-top:18px" data-act="openClaudeId">${svg("sparkle")} Abrir Claude</button>`); return; }
   photoPicker("Identificar con IA", "Haz una foto a tu planta y la reconoceré para configurar su riego automáticamente.", null, async (img, sh) => {
     if (!img) { toast("Primero elige una foto"); return; }
     const res = $("#aiRes", sh), btn = $("#goAI", sh); btn.disabled = true; res.innerHTML = `<div class="ai-out"><span class="typing"><i></i><i></i><i></i></span> Analizando la foto…</div>`;
@@ -1005,6 +1034,14 @@ function startCustom(prefill) {
   });
 }
 function startDiagnose(pid) {
+  if (AI_MODE === "link") {
+    const cur = pid || (S.plants[0] && S.plants[0].id) || "";
+    openSheet(sheetHead("Diagnóstico") + `<p class="muted" style="margin-top:0">Cuéntame qué le notas. Se abrirá Claude con tu planta, su riego reciente y el tiempo; allí puedes adjuntar una foto con el botón <b>+</b>.</p>
+      <div class="field"><label for="dPlant">Planta</label><select class="input" id="dPlant"><option value="">Otra / no está en mi lista</option>${S.plants.map(p => `<option value="${p.id}"${p.id === cur ? " selected" : ""}>${esc(p.name)}</option>`).join("")}</select></div>
+      <div class="field" style="margin-top:12px"><label for="dTxt">¿Qué le pasa?</label><textarea class="input" id="dTxt" rows="3" placeholder="Hojas amarillas por abajo, puntas secas…"></textarea></div>
+      <button class="btn primary block lg" style="margin-top:16px" data-act="openClaudeDx">${svg("sparkle")} Abrir Claude</button>`);
+    return;
+  }
   photoPicker("Diagnóstico con IA", "Cuéntame qué le pasa o haz una foto. Tendré en cuenta su riego reciente y el tiempo.", pid || (S.plants[0] && S.plants[0].id) || "-", async (img, sh) => {
     const id = $("#dPlant").value, txt = $("#dTxt").value.trim(); if (!img && !txt) { toast("Añade una foto o describe el problema"); return; }
     const p = S.plants.find(x => x.id === id); let ctx = "";
@@ -1043,6 +1080,8 @@ document.addEventListener("click", e => {
   else if (a === "theme") { S.prefs.theme = b.dataset.v; applyTheme(); save(); openSettings(); }
   else if (a === "testNotif") testNotif();
   else if (a === "share") shareApp();
+  else if (a === "openClaudeId") { closeSheet(); openClaude("Te voy a adjuntar una foto de una planta. Identifica la especie, dime si se ve sana y cómo debo regarla según el tiempo de mi zona. Dime también qué tipo elegir en el catálogo de mi app (por ejemplo «Potos», «Romero», «Tomate (crecimiento)»)."); }
+  else if (a === "openClaudeDx") { const p = S.plants.find(x => x.id === $("#dPlant").value); const t = $("#dTxt").value.trim(); let extra = ""; if (p) { const s = simulate(p); extra = `La planta es ${p.name} (${spec(p).n}). Riegos recientes: ${(p.log || []).slice(-5).map(e => e.t.slice(0, 10)).join(", ") || p.last.slice(0, 10)}. Agua útil estimada ahora: ${Math.round(s.moist * 100)} %. `; } closeSheet(); openClaude(extra + "Síntomas: " + (t || "te adjunto una foto") + ". Dime el problema más probable, si tiene que ver con el riego y qué hago paso a paso. Si te adjunto foto, úsala."); }
   else if (a === "install") installApp();
   else if (a === "hideInstall") { S.prefs.hideInstall = true; save(); render(); }
   else if (a === "ics") exportCalendar();
