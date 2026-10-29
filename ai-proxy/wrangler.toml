@@ -1,0 +1,7 @@
+name = "rocio-ia"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+MODEL = "claude-haiku-5-5"
+DAILY_LIMIT = "40"

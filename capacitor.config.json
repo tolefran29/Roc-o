@@ -1,0 +1,11 @@
+{
+  "appId": "es.rocio.riego",
+  "appName": "Rocío",
+  "webDir": "www",
+  "android": { "backgroundColor": "#eef2ec" },
+  "plugins": {
+    "SystemBars": { "insetsHandling": "css", "initialViewportFitValueHint": "cover" },
+    "SplashScreen": { "launchShowDuration": 1500, "launchAutoHide": false, "backgroundColor": "#2c6a4c", "showSpinner": false },
+    "LocalNotifications": { "smallIcon": "ic_stat_drop", "iconColor": "#2c6a4c" }
+  }
+}
