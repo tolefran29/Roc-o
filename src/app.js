@@ -143,6 +143,9 @@ const I = {
   bell: '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>',
   refresh: '<path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/>',
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/>',
+  expand: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',
+  ok: '<circle cx="12" cy="12" r="9"/><path d="m8 12.5 3 3 5-6"/>',
+  warn: '<circle cx="12" cy="12" r="9"/><path d="M12 7.5v6M12 16.5v.01"/>',
 };
 const svg = (k, cls = "") => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[k] || ""}</svg>`;
 /* Glifos por categoría */
@@ -622,6 +625,7 @@ function wikiTitle(sp) {
   let t = String(sp.sci || "").replace(/'[^']*'/g, "").replace(/\b(spp?|var|subsp|f)\..*$/i, "").split("/")[0].replace(/\s+/g, " ").trim();
   if (!t || /^varias$/i.test(t)) t = ""; return t;
 }
+function bigWiki(u) { return String(u).replace(/\/(\d+)px-([^/]+)$/, "/1280px-$2"); }
 function photoOf(sp) { const e = PHOTOS[spKey(sp)]; return e && e.u ? e : null; }
 function savePhotos() { try { localStorage.setItem(PH_KEY, JSON.stringify(PHOTOS)); } catch (e) { } }
 let phQueue = new Map(), phTimer = null, phBusy = false;
@@ -657,7 +661,7 @@ async function flushPhotos() {
 }
 function paintPhotos() {
   $$(".av[data-sp]").forEach(el => { if (el.querySelector("img")) return; const e = PHOTOS[el.dataset.sp]; if (e && e.u) { el.innerHTML = `<img src="${esc(e.u)}" alt="" loading="lazy">`; el.classList.add("ph"); } });
-  $$("[data-hero-sp]").forEach(el => { const e = PHOTOS[el.dataset.heroSp]; if (e && e.u && !el.querySelector("img")) { el.innerHTML = `<img src="${esc(e.u)}" alt=""><a class="credit" href="https://${e.w.split(":")[0]}.wikipedia.org/wiki/${encodeURIComponent(e.w.split(":").slice(1).join(":"))}" target="_blank" rel="noopener">Foto: Wikipedia</a>`; el.classList.remove("hidden"); } });
+  $$("[data-hero-sp]").forEach(el => { const e = PHOTOS[el.dataset.heroSp]; if (e && e.u && !el.querySelector("img")) { const ph = el.querySelector(".hero-ph"); if (ph) ph.remove(); el.insertAdjacentHTML("afterbegin", `<img src="${esc(e.u)}" alt="" data-full="${esc(bigWiki(e.u))}" data-small="${esc(e.u)}"><button class="hero-zoom" data-act="zoom" aria-label="Ver foto a pantalla completa">${svg("expand")}</button>`); el.classList.remove("empty"); } });
 }
 function avatar(p, lg) {
   const sp = spec(p), c = sp.cat, t = thumbs[p.id], k = spKey(sp), ph = !t && photoOf(sp);
@@ -966,7 +970,10 @@ function openDetail(id) {
   const fbTxt = { wet: "aún húmeda", ok: "en su punto", dry: "muy seca" };
   const own = thumbs[p.id], ph = photoOf(sp);
   if (!own && !ph) wantPhoto(sp);
-  const hero = own ? `<div class="pl-hero"><img src="${own}" alt=""></div>` : ph ? `<div class="pl-hero"><img src="${esc(ph.u)}" alt=""><a class="credit" href="https://${ph.w.split(":")[0]}.wikipedia.org/wiki/${encodeURIComponent(ph.w.split(":").slice(1).join(":"))}" target="_blank" rel="noopener">Foto: Wikipedia</a></div>` : PHOTO_OK ? `<div class="pl-hero hidden" data-hero-sp="${esc(spKey(sp))}"></div>` : "";
+  const heroImg = own ? `<img src="${own}" alt="Foto de ${esc(p.name)}" data-full="${own}">` : ph ? `<img src="${esc(ph.u)}" alt="${esc(sp.n)}" data-full="${esc(bigWiki(ph.u))}" data-small="${esc(ph.u)}">` : "";
+  const hero = `<div class="pl-hero${heroImg ? "" : " empty"}" data-hero-sp="${esc(spKey(sp))}">${heroImg || `<div class="hero-ph" style="color:${CAT_TINT[sp.cat]}">${glyph(sp.cat)}</div>`}
+    <div class="hero-acts"><label class="hero-btn" for="dPhoto">${svg("camera")} ${own ? "Cambiar foto" : "Poner foto de mi planta"}</label>${own ? `<button class="hero-btn" data-act="rmPhoto" data-id="${p.id}">Quitar</button>` : ""}</div>
+    ${heroImg ? `<button class="hero-zoom" data-act="zoom" aria-label="Ver foto a pantalla completa">${svg("expand")}</button>` : ""}</div><input type="file" id="dPhoto" accept="image/*" class="hidden">`;
   const html = sheetHead(esc(p.name)) + hero + `
     <div class="detail-top"><div class="big-ring">${ring(s.moist, s.status, true)}<div class="c"><div><b class="num">${Math.round(s.moist * 100)}%</b><span>agua útil</span></div></div></div>
       <div style="display:grid;gap:6px;min-width:0">${statusPill(s)}<div style="font-family:var(--display);font-size:22px;font-weight:700;line-height:1.15">${whenText(s)}</div><div class="muted small">${fmtL(s.liters)}${p.cont === "pot" ? ", hasta que empiece a salir por el plato" : ""} · ${s.conf}</div></div></div>
@@ -974,11 +981,73 @@ function openDetail(id) {
     <div style="display:flex;gap:8px;margin:16px 0"><button class="btn water" style="flex:1" data-act="water" data-id="${p.id}">${svg("drop")} Lo he regado</button>${AI_MODE ? `<button class="btn" data-act="diagnose" data-id="${p.id}">${svg("stethoscope")} Diagnóstico IA</button>` : ""}</div>
     <div class="card" style="padding:14px"><div class="lbl" style="margin-bottom:6px">Humedad del sustrato · 14 días y previsión</div>${moistChart(s)}</div>
     <div class="kv num" style="margin-top:12px"><div><span>Consumo hoy</span><b>${nf1.format(s.etcToday)} mm</b></div><div><span>Agua útil total</span><b>${fmtL(s.P.taw * s.P.area)}</b></div><div><span>Umbral de riego</span><b>${Math.round((1 - s.P.raw / s.P.taw) * 100)} %</b></div><div><span>Kc especie</span><b>${nf1.format(+sp.kc)}${p.cal && Math.abs(p.cal - 1) > .04 ? ` <span style="display:inline;font-size:12px;color:var(--ink-3)">×${p.cal.toFixed(2)}</span>` : ""}</b></div></div>
+    ${plantReview(p, s)}
     ${sp.note ? `<div class="alert info" style="margin-top:12px">${svg("leaf")}<div>${esc(sp.note)}</div></div>` : ""}
     <div class="card" style="margin-top:12px;padding:14px"><div class="lbl" style="margin-bottom:4px">Historial de riegos</div><div class="hist num">${log.length ? log.map(e => `<div><span>${new Date(e.t).toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" })} · ${new Date(e.t).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })}</span><span class="faint">${fbTxt[e.fb] || ""}</span></div>`).join("") : `<div><span>Último riego</span><span>${niceDay(p.last.slice(0, 10), today)}</span></div>`}</div></div>
     <div class="muted small" style="margin-top:12px">${esc(sp.n)}${sp.sci ? ` · <i>${esc(sp.sci)}</i>` : ""} · ${{ in: "Interior", out: "Exterior", cov: "Exterior cubierto" }[p.place]} · ${p.cont === "pot" ? "maceta " + p.diam + "×" + p.depth + " cm · " + esc(subInfo(p).label) : p.area + " m², raíces " + p.root + " cm · suelo " + esc(soilInfo(p).label)}</div>
     <div style="display:flex;gap:8px;margin-top:16px"><button class="btn" style="flex:1" data-act="edit" data-id="${p.id}">${svg("edit")} Editar</button><button class="btn ghost" data-act="del" data-id="${p.id}" style="color:var(--crit)">${svg("trash")} Eliminar</button></div>`;
-  openSheet(html);
+  openSheet(html, sh => {
+    const inp = $("#dPhoto", sh); if (inp) inp.onchange = async e => { const f = e.target.files[0]; if (!f) return; try { const im = await resizeImage(f, 900, .8); p.hasThumb = true; await saveThumb(p.id, im.dataUrl); save(); toast("Foto guardada"); openDetail(p.id); render(); } catch (err) { toast("No pude leer esa foto"); } };
+    const img = $(".pl-hero img", sh); if (img) img.onclick = () => openZoom(img);
+  });
+}
+function openZoom(img) {
+  if (!img) return; const z = document.createElement("div"); z.className = "zoom"; z.setAttribute("role", "dialog"); z.setAttribute("aria-label", "Foto a pantalla completa");
+  const full = img.dataset.full || img.src, small = img.dataset.small || img.src;
+  z.innerHTML = `<img src="${esc(full)}" alt="${esc(img.alt || "")}"><button class="icon-btn zoom-x" aria-label="Cerrar">${svg("x")}</button>`;
+  const im = z.querySelector("img"); im.onerror = () => { if (im.src !== small) im.src = small; };
+  const close = () => { z.classList.remove("on"); setTimeout(() => z.remove(), 200); document.removeEventListener("keydown", onKey); zoomOpen = null; };
+  const onKey = e => { if (e.key === "Escape") close(); };
+  z.onclick = e => { if (e.target === z || e.target.closest(".zoom-x")) close(); };
+  document.addEventListener("keydown", onKey); document.body.appendChild(z); requestAnimationFrame(() => z.classList.add("on")); zoomOpen = close;
+}
+let zoomOpen = null;
+
+/* Revisión sencilla: suelo, maceta, luz, ubicación y temperaturas */
+function plantReview(p, s) {
+  const sp = spec(p), P = s.P, items = []; const good = t => items.push(["ok", t]), bad = (t, why) => items.push(["warn", t, why]);
+  const dry = sp.p >= .65, thirsty = sp.p <= .3, acid = sp.sub === "acid", bark = sp.sub === "bark", cactusLike = sp.sub === "cactus";
+  // 1) Suelo o sustrato
+  if (p.cont === "pot") {
+    const aw = subInfo(p).aw, mine = p.sub === "mix" ? "tu mezcla" : (SUB_LABEL[p.sub] || "el sustrato").toLowerCase();
+    if (acid && p.sub !== "acid") bad("Necesita un sustrato ácido", `Es una planta acidófila y ${mine} no lo es. Usa sustrato para plantas ácidas y riega con agua de lluvia o con poca cal.`);
+    else if (bark && p.sub !== "bark" && (p.sub !== "mix" || !(p.mix && (p.mix.corteza || p.mix.musgo)))) bad("Mejor un sustrato de corteza", "Sus raíces necesitan aire. Con tierra normal se pudren con facilidad.");
+    else if ((dry || cactusLike) && aw > .17) bad("El sustrato retiene demasiada agua", `Es una planta que prefiere secarse entre riegos. Mezcla ${mine} con un 30–50 % de perlita, arena gruesa o pómez.`);
+    else if (thirsty && aw < .12) bad("El sustrato se seca demasiado rápido", "Esta planta quiere humedad constante. Añade turba, fibra de coco o humus a la mezcla.");
+    else good(`El sustrato (${p.sub === "mix" ? "tu mezcla" : SUB_LABEL[p.sub] || "universal"}) le va bien`);
+  } else {
+    const si = soilInfo(p), t = TEXTURES[p.soil]; const clayish = p.soil === "custom" ? (+p.clay || 0) >= 40 : t ? t.C >= .4 : p.soil === "clay";
+    if (si.aw < .07 && !dry) bad("El suelo retiene poca agua", "Es muy arenoso o pedregoso. Añade compost cada año y pon acolchado (paja, corteza) para que no se seque tan rápido.");
+    else if (clayish && (dry || cactusLike)) bad("El suelo puede encharcarse", "Es pesado y a esta planta no le gusta el exceso de agua. Plántala en un pequeño montículo o mezcla arena gruesa en el hoyo.");
+    else if (clayish) items.push(["ok", "Suelo arcilloso: guarda bien el agua", "Riega despacio para que lo absorba sin encharcarse."]);
+    else good(`El tipo de suelo (${si.label.toLowerCase()}) es adecuado`);
+    if (p.om != null && +p.om < 1.5 && p.soil !== "custom") bad("Le falta materia orgánica", "Echa compost o estiércol bien hecho en otoño: mejora el suelo y guarda más agua.");
+  }
+  // 2) Tamaño de la maceta y frecuencia de riego
+  const perDay = Math.max(.05, (s.etcToday || .5)), every = P.raw / perDay;
+  if (p.cont === "pot") {
+    if (p.size === "2.3" && p.diam < 25) bad("La maceta se le ha quedado pequeña", `Mide ${p.diam} cm y la planta es grande. Trasplántala a una de al menos 30 cm cuando acabe el frío.`);
+    else if (every < 1.5 && !thirsty) bad("Necesitará agua casi a diario", "Con este tiempo la maceta se seca muy rápido. Una maceta más grande o un plato con grava húmeda ayuda.");
+    else good(`Con este tiempo, regarás aproximadamente cada ${every < 10 ? Math.max(1, Math.round(every)) : Math.round(every)} día${Math.round(every) === 1 ? "" : "s"}`);
+    if (p.mat === "terracotta" && thirsty) bad("La maceta de barro le quita humedad", "El barro transpira y seca antes el sustrato. Para esta planta va mejor plástico o cerámica esmaltada.");
+  } else good(`Con este tiempo, regarás aproximadamente cada ${Math.max(1, Math.round(every))} días`);
+  // 3) Luz
+  const lightRank = { shade: 0, part: 1, full: 2 };
+  if (lightRank[sp.sun] - lightRank[p.sun] >= 2 || (sp.sun === "full" && p.sun === "part" && p.place === "in")) bad("Le falta luz", sp.place === "in" ? "Acércala a una ventana luminosa." : "Busca un sitio donde le dé el sol al menos 5–6 horas.");
+  else if (sp.sun === "shade" && p.sun === "full" && p.place !== "in") bad("Demasiado sol directo", "Sus hojas pueden quemarse. Mejor semisombra o sol solo por la mañana.");
+  else good("La luz que recibe es adecuada");
+  // 4) Ubicación y temperaturas de los próximos días
+  let tmin = null, tmax = null; for (let k = 0; k < 7; k++) { const w = wxDay(addDays(s.today, k)); if (w) { tmin = tmin == null ? w.tmin : Math.min(tmin, w.tmin); tmax = tmax == null ? w.tmax : Math.max(tmax, w.tmax); } }
+  if (p.place !== "in" && tmin != null && tmin <= sp.minC) bad(`Pasará frío esta semana (mínima de ${Math.round(tmin)} °C)`, `Aguanta hasta unos ${sp.minC} °C. ${p.cont === "pot" ? "Métela dentro o pégala a una pared resguardada" : "Protégela con manta térmica"} las noches más frías.`);
+  else if (p.place !== "in" && tmax != null && tmax >= sp.maxC) bad(`Calor fuerte esta semana (${Math.round(tmax)} °C)`, "Riega al amanecer y dale sombra en las horas centrales.");
+  else if (p.place === "in" && sp.place === "out" && sp.minC < 0) items.push(["ok", "Es una planta de exterior", "Puede vivir dentro, pero estará más fuerte en un balcón o terraza luminosos."]);
+  else if (tmin != null) good("Las temperaturas de esta semana le van bien");
+  // 5) Aprendizaje del modelo
+  if (p.cal > 1.3) items.push(["warn", "Gasta más agua de lo normal", "Puede que la maceta sea pequeña o le dé mucho viento. Lo tengo en cuenta al calcular."]);
+  else if (p.cal && p.cal < .75) items.push(["warn", "Gasta menos agua de lo normal", "Revisa que la maceta drene bien: el exceso de riego es la causa más común de problemas."]);
+  const nWarn = items.filter(i => i[0] === "warn").length;
+  return `<div class="card review" style="margin-top:12px"><div class="rv-h"><div class="rv-score ${nWarn ? (nWarn > 1 ? "w2" : "w1") : "ok"}">${svg(nWarn ? "warn" : "ok")}</div><div><b>${nWarn ? (nWarn === 1 ? "1 cosa que mejorar" : nWarn + " cosas que mejorar") : "Todo en orden"}</b><span>Revisión de tu planta</span></div></div>
+    <ul class="rv">${items.map(([k, t, why]) => `<li class="${k}">${svg(k === "ok" ? "ok" : "warn")}<div><b>${esc(t)}</b>${why ? `<span>${esc(why)}</span>` : ""}</div></li>`).join("")}</ul></div>`;
 }
 function moistChart(s) {
   const W = 540, H = 150, pl = 30, pr = 6, pt = 8, pb = 20; const today = s.today;
@@ -1066,7 +1135,7 @@ function openForm(p, isNew) {
     };
     $("#fSub", sh).addEventListener("change", e => $("#mixF").classList.toggle("hidden", e.target.value !== "mix"));
     $$("[data-mix]", sh).forEach(i => i.addEventListener("input", mixUpd)); mixUpd();
-    $("#fPhoto", sh).onchange = async e => { const f = e.target.files[0]; if (!f) return; try { const im = await resizeImage(f, 600); p._thumb = im.thumb; const av = $(".ph-pick .av", sh); av.innerHTML = `<img src="${im.thumb}" alt="">`; av.classList.add("ph"); } catch (err) { toast("No pude leer esa foto"); } };
+    $("#fPhoto", sh).onchange = async e => { const f = e.target.files[0]; if (!f) return; try { const im = await resizeImage(f, 900, .8); p._thumb = im.dataUrl; const av = $(".ph-pick .av", sh); av.innerHTML = `<img src="${im.dataUrl}" alt="">`; av.classList.add("ph"); } catch (err) { toast("No pude leer esa foto"); } };
     $$("[data-seg] button", sh).forEach(b => b.onclick = () => { $$("button", b.parentNode).forEach(x => x.classList.toggle("on", x === b)); const n = b.parentNode.dataset.seg;
       if (n === "cont") { $("#potF").classList.toggle("hidden", b.dataset.v !== "pot"); $("#groundF").classList.toggle("hidden", b.dataset.v !== "ground"); }
       if (n === "place") $("#heatF").classList.toggle("hidden", b.dataset.v !== "in"); });
@@ -1211,6 +1280,8 @@ document.addEventListener("click", e => {
   else if (a === "theme") { S.prefs.theme = b.dataset.v; applyTheme(); save(); openSettings(); }
   else if (a === "testNotif") testNotif();
   else if (a === "share") shareApp();
+  else if (a === "zoom") openZoom(b.closest(".pl-hero").querySelector("img"));
+  else if (a === "rmPhoto") { delete thumbs[id]; const p = S.plants.find(x => x.id === id); if (p) p.hasThumb = false; lsSet(); if (DB) DB.doc("garden/thumb-" + id).delete().catch(() => { }); save(); render(); openDetail(id); toast("Foto quitada"); }
   else if (a === "openClaudeId") { closeSheet(); openClaude("Te voy a adjuntar una foto de una planta. Identifica la especie, dime si se ve sana y cómo debo regarla según el tiempo de mi zona. Dime también qué tipo elegir en el catálogo de mi app (por ejemplo «Potos», «Romero», «Tomate (crecimiento)»)."); }
   else if (a === "openClaudeDx") { const p = S.plants.find(x => x.id === $("#dPlant").value); const t = $("#dTxt").value.trim(); let extra = ""; if (p) { const s = simulate(p); extra = `La planta es ${p.name} (${spec(p).n}). Riegos recientes: ${(p.log || []).slice(-5).map(e => e.t.slice(0, 10)).join(", ") || p.last.slice(0, 10)}. Agua útil estimada ahora: ${Math.round(s.moist * 100)} %. `; } closeSheet(); openClaude(extra + "Síntomas: " + (t || "te adjunto una foto") + ". Dime el problema más probable, si tiene que ver con el riego y qué hago paso a paso. Si te adjunto foto, úsala."); }
   else if (a === "install") installApp();
@@ -1292,6 +1363,7 @@ async function openSettings() {
       <p><b>Rocío ${esc(CONFIG.version)}</b>. Riego calculado con el método FAO‑56 a partir del tiempo de tu ubicación.</p>
       <p>${IN_CLAUDE ? "Tus plantas se guardan en tu cuenta de Claude." : "Tus plantas se guardan solo en este dispositivo. No hay cuentas, anuncios ni rastreo."}</p>
       <p><a href="https://open-meteo.com/" target="_blank" rel="noopener">Datos meteorológicos de Open‑Meteo.com</a> (CC BY 4.0).</p>
+      ${PHOTO_OK ? `<p>Fotos de referencia de las especies: <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a>, con licencias libres de sus autores.</p>` : ""}
       ${CONFIG.privacyUrl ? `<p><a href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener">Política de privacidad</a></p>` : ""}
       ${CONFIG.contactEmail ? `<p>Contacto: ${esc(CONFIG.contactEmail)}</p>` : ""}
     </div>`;
@@ -1352,7 +1424,7 @@ if (IS_PWA && "serviceWorker" in navigator && location.protocol === "https:") wi
     try { N.SplashScreen.hide(); } catch (e) { }
     if (N.LocalNotifications) N.LocalNotifications.createChannel({ id: "riego", name: "Recordatorios de riego", description: "Aviso diario cuando una planta necesita agua", importance: 4, visibility: 1 }).catch(() => { });
     if (N.App) {
-      N.App.addListener("backButton", () => { if ($("#scrim").classList.contains("open")) closeSheet(); else if (!$("#onb").classList.contains("hidden")) { } else if (VIEW !== "today") setView("today"); else N.App.minimizeApp(); });
+      N.App.addListener("backButton", () => { if (zoomOpen) zoomOpen(); else if ($("#scrim").classList.contains("open")) closeSheet(); else if (!$("#onb").classList.contains("hidden")) { } else if (VIEW !== "today") setView("today"); else N.App.minimizeApp(); });
       N.App.addListener("appStateChange", st => { if (st.isActive) { refreshWeather(false); render(); } else scheduleReminders(); });
     }
     matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
